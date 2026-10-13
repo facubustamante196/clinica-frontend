@@ -1,59 +1,113 @@
-# ClinicaFrontend
+# Clínica — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.26.
+Frontend de la clínica virtual en Angular 21 + Angular Material 21 (componentes standalone, sin SSR).
+Consume la API de [`clinica-backend`](../clinica-backend).
 
-## Development server
+## Versiones
 
-To start a local development server, run:
+Tomadas de `node -v` y `ng version`:
+
+| Herramienta | Versión |
+|---|---|
+| Node.js | 22.23.2 (soportadas: ^20.19, ^22.12 o ^24) |
+| npm | 10.9.8 |
+| Angular CLI | 21.2.26 |
+| Angular | 21.2.25 |
+| Angular Material / CDK | 21.2.14 |
+| TypeScript | 5.9.3 |
+
+## Instalación
+
+Requiere el Angular CLI 21 instalado globalmente:
+
+```bash
+npm install -g @angular/cli@21
+```
+
+Después, en la carpeta del proyecto:
+
+```bash
+npm install
+```
+
+> Si `npm install` falla con `Cannot read properties of null (reading 'edgesOut')`, es un bug de
+> npm 10 al resolver las dependencias de `vitest`. Pasa si se borró `package-lock.json`: restauralo
+> desde git, o generalo una vez con `npx npm@11 install`.
+
+## Levantar
+
+Con el backend corriendo en `http://localhost:3000`:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La app queda en `http://localhost:4200`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Otros comandos:
 
 ```bash
-ng generate component component-name
+ng build   # compilación de producción en dist/
+ng test    # tests unitarios (Vitest)
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## URL del backend
 
-```bash
-ng generate --help
+Se configura en un único lugar, `src/environments/`:
+
+- `environment.development.ts`: la usa `ng serve`.
+- `environment.ts`: la usa `ng build` (producción).
+
+```ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000',
+};
 ```
 
-## Building
+Ningún servicio repite la URL: todos arman sus rutas a partir de `environment.apiUrl`.
 
-To build the project run:
+## Estructura de carpetas
 
-```bash
-ng build
+```
+src/
+├── environments/              # URL de la API por entorno
+└── app/
+    ├── app.config.ts          # providers: router, HttpClient + interceptor, restauración de sesión
+    ├── app.routes.ts          # rutas públicas, con sesión, por rol y de estado
+    ├── core/
+    │   ├── guards/            # authGuard, roleGuard
+    │   ├── interceptors/      # authInterceptor (Bearer + manejo de 401)
+    │   ├── models/            # Usuario, Rol, Cobertura, request/response de auth, ApiRespuesta
+    │   └── services/          # AuthService, TokenService, CoberturaService
+    ├── layout/                # header, menu, footer
+    ├── pages/
+    │   ├── admin/             # admin.routes.ts (sección /admin)
+    │   ├── medico/            # medico.routes.ts (sección /medico)
+    │   ├── operador/          # operador.routes.ts (sección /operador)
+    │   ├── paciente/          # paciente.routes.ts (sección /paciente)
+    │   ├── home/  login/  perfil/  registro/
+    │   └── acceso-denegado/  en-construccion/  no-encontrada/
+    └── shared/                # componentes reutilizables (pagina-estado)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Sesión y acceso
 
-## Running unit tests
+- `AuthService` expone `usuario` (signal), `rol` y `estaLogueado` (computed), y los métodos
+  `login(dni, password)`, `logout()`, `obtenerPerfil()` y `registrar(datos)`.
+- El JWT se guarda en `localStorage` (`clinica_token`). Al recargar, la sesión se restaura con
+  `GET /auth/perfil` antes de la primera navegación.
+- `authInterceptor` agrega `Authorization: Bearer <token>` a las peticiones a la API. Ante un 401,
+  cierra la sesión y redirige a `/login`.
+- Rutas:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Ruta | Acceso |
+|---|---|
+| `/`, `/login`, `/registro` | Públicas |
+| `/perfil` | Con sesión |
+| `/admin/...` | Rol `admin` |
+| `/medico/...` | Rol `medico` |
+| `/operador/...` | Rol `operador` |
+| `/paciente/...` | Rol `paciente` |
+| `/acceso-denegado` | Sin permiso para la sección |
+| cualquier otra | Página no encontrada |
