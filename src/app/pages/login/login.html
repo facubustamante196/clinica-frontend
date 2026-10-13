@@ -1,0 +1,51 @@
+<mat-card class="login" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Iniciar sesión</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="form" (ngSubmit)="ingresar()" novalidate>
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>DNI</mat-label>
+        <input matInput formControlName="dni" inputmode="numeric" autocomplete="username" />
+        @if (form.controls.dni.hasError('required')) {
+          <mat-error>El DNI es obligatorio.</mat-error>
+        } @else if (form.controls.dni.hasError('pattern')) {
+          <mat-error>El DNI debe contener solo números.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultarPassword.set(!ocultarPassword())"
+          [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <mat-icon>{{ ocultarPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button type="submit" [disabled]="cargando()">
+        @if (cargando()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Ingresar
+        }
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

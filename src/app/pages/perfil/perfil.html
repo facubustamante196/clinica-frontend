@@ -1,0 +1,56 @@
+<mat-card class="perfil" appearance="outlined">
+  @if (usuario(); as u) {
+    <mat-card-header>
+      <mat-icon mat-card-avatar>account_circle</mat-icon>
+      <mat-card-title>{{ u.nombre }} {{ u.apellido }}</mat-card-title>
+      <mat-card-subtitle>{{ etiquetaRol() }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>badge</mat-icon>
+          <span matListItemTitle>DNI</span>
+          <span matListItemLine>{{ u.dni }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>email</mat-icon>
+          <span matListItemTitle>Email</span>
+          <span matListItemLine>{{ u.email }}</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>phone</mat-icon>
+          <span matListItemTitle>Teléfono</span>
+          <span matListItemLine>{{ u.telefono || 'Sin cargar' }}</span>
+        </mat-list-item>
+        @if (u.fecha_nacimiento) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>cake</mat-icon>
+            <span matListItemTitle>Fecha de nacimiento</span>
+            <span matListItemLine>{{ u.fecha_nacimiento | date: 'dd/MM/yyyy' }}</span>
+          </mat-list-item>
+        }
+        @if (u.id_cobertura !== null) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>health_and_safety</mat-icon>
+            <span matListItemTitle>Cobertura</span>
+            <span matListItemLine>{{ cobertura() ?? 'N.º ' + u.id_cobertura }}</span>
+          </mat-list-item>
+        }
+        @if (u.id_sede !== null) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>location_city</mat-icon>
+            <span matListItemTitle>Sede</span>
+            <span matListItemLine>N.º {{ u.id_sede }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </mat-card-content>
+  } @else if (cargando()) {
+    <mat-card-content>
+      <mat-spinner diameter="40" />
+    </mat-card-content>
+  } @else {
+    <mat-card-content>No se pudieron obtener los datos del perfil.</mat-card-content>
+  }
+</mat-card>
