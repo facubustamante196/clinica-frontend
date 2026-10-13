@@ -1,2 +1,39 @@
-<h1>Inicio</h1>
-<!-- TODO (Tomas): pantalla principal. -->
+@if (auth.estaLogueado()) {
+  <mat-card appearance="outlined" class="tarjeta">
+    <mat-card-header>
+      <mat-card-title>Hola, {{ auth.usuario()?.nombre }}</mat-card-title>
+      <mat-card-subtitle>Qué bueno verte de nuevo</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="invitacion">
+        <mat-icon>arrow_back</mat-icon>
+        Elegí una función del menú para empezar.
+      </p>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <mat-card appearance="outlined" class="tarjeta">
+    <mat-card-header>
+      <mat-card-title>Bienvenido a la clínica virtual</mat-card-title>
+      <mat-card-subtitle>Gestioná tu atención médica en un solo lugar</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>Si ya tenés una cuenta, iniciá sesión. Si sos nuevo, registrate: es gratis y rápido.</p>
+      <p>Siendo paciente registrado vas a poder:</p>
+      <ul class="beneficios">
+        @for (beneficio of beneficios; track beneficio.icono) {
+          <li>
+            <mat-icon>{{ beneficio.icono }}</mat-icon>
+            <span>{{ beneficio.texto }}</span>
+          </li>
+        }
+      </ul>
+    </mat-card-content>
+
+    <mat-card-actions class="acciones">
+      <a mat-flat-button routerLink="/login">Iniciar sesión</a>
+      <a mat-stroked-button routerLink="/registro">Registrarme</a>
+    </mat-card-actions>
+  </mat-card>
+}

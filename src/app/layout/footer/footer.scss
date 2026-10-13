@@ -1,0 +1,37 @@
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  padding: 24px;
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.bloque {
+  flex: 1 1 220px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
+}
+
+p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font: var(--mat-sys-body-medium);
+}
+
+mat-icon {
+  flex: none;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+a {
+  color: var(--mat-sys-primary);
+}

@@ -1,2 +1,48 @@
-<h1>Header</h1>
-<!-- TODO (Tomas): header de la aplicación. Puede usar AuthService (usuario, rol, estaLogueado, logout). -->
+<mat-toolbar class="header">
+  <button
+    mat-icon-button
+    type="button"
+    class="boton-menu"
+    aria-label="Abrir o cerrar el menú"
+    (click)="menuClick.emit()"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <a routerLink="/" class="marca" aria-label="Ir a la pantalla principal">
+    <mat-icon>local_hospital</mat-icon>
+    <span class="marca-texto">Clínica Virtual</span>
+  </a>
+
+  <span class="espaciador"></span>
+
+  @if (auth.estaLogueado()) {
+    <button
+      mat-icon-button
+      type="button"
+      aria-label="Notificaciones"
+      matTooltip="Notificaciones"
+    >
+      <mat-icon>notifications</mat-icon>
+    </button>
+
+    <span class="nombre" [attr.title]="nombreCompleto()">{{ nombreCompleto() }}</span>
+
+    <button
+      mat-icon-button
+      type="button"
+      [attr.aria-label]="tipoUsuario()"
+      [matTooltip]="tipoUsuario()"
+      matTooltipShowDelay="0"
+    >
+      <mat-icon>info</mat-icon>
+    </button>
+
+    <button mat-button type="button" (click)="cerrarSesion()">
+      <mat-icon>logout</mat-icon>
+      <span class="texto-boton">Cerrar sesión</span>
+    </button>
+  } @else {
+    <span class="bienvenida">Bienvenido a la clínica virtual</span>
+  }
+</mat-toolbar>

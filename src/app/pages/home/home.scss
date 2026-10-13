@@ -1,0 +1,33 @@
+.tarjeta {
+  max-width: 640px;
+  margin: 16px auto;
+  padding-bottom: 8px;
+}
+
+.beneficios {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.invitacion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acciones {
+  gap: 8px;
+  padding: 0 16px 16px;
+}

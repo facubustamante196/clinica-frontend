@@ -1,7 +1,21 @@
-<!-- Estructura mínima; Tomas define el layout visual. -->
-<app-header />
-<app-menu />
-<main>
-  <router-outlet />
-</main>
-<app-footer />
+<div class="app">
+  <app-header (menuClick)="alternarMenu()" />
+
+  <mat-sidenav-container class="contenedor">
+    <mat-sidenav
+      [mode]="esMovil() ? 'over' : 'side'"
+      [opened]="!esMovil()"
+      [fixedInViewport]="false"
+      class="panel-menu"
+    >
+      <app-menu (navegar)="alNavegar()" />
+    </mat-sidenav>
+
+    <mat-sidenav-content class="contenido">
+      <main class="principal">
+        <router-outlet />
+      </main>
+      <app-footer />
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
