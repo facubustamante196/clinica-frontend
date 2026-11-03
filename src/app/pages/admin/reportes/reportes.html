@@ -1,0 +1,111 @@
+<mat-card appearance="outlined" class="encabezado">
+  <mat-card-header>
+    <mat-card-title>Reportes y estadísticas</mat-card-title>
+    @if (datos(); as d) {
+      <mat-card-subtitle>
+        Del {{ d.cancelacion.desde | fecha }} al {{ d.cancelacion.hasta | fecha }}
+      </mat-card-subtitle>
+    }
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="filtro" [formGroup]="rango" (ngSubmit)="actualizar()" novalidate>
+      <mat-form-field>
+        <mat-label>Rango de fechas</mat-label>
+        <mat-date-range-input [rangePicker]="selectorRango">
+          <input matStartDate formControlName="desde" placeholder="Desde" />
+          <input matEndDate formControlName="hasta" placeholder="Hasta" />
+        </mat-date-range-input>
+        <mat-hint>dd/mm/aaaa – dd/mm/aaaa</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="selectorRango" />
+        <mat-date-range-picker #selectorRango />
+        @if (rango.controls.desde.invalid || rango.controls.hasta.invalid) {
+          <mat-error>Completá las dos fechas del rango.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" [disabled]="cargando()">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+@if (cargando()) {
+  <app-cargando mensaje="Calculando indicadores…" />
+} @else if (error(); as mensaje) {
+  <app-sin-resultados icono="error" [mensaje]="mensaje" />
+} @else if (datos(); as d) {
+  <div class="tablero">
+    <mat-card appearance="outlined" class="indicador">
+      <mat-card-header>
+        <mat-card-title>Tasa de cancelación</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="numero-grande">{{ d.cancelacion.tasa_cancelacion | number: '1.0-2' }} %</p>
+        <p class="detalle-indicador">
+          {{ d.cancelacion.cancelados }} cancelados de {{ d.cancelacion.total }} turnos
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="ranking">
+      <mat-card-header>
+        <mat-card-title>Ranking de médicos por turnos atendidos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (d.ranking.items.length === 0) {
+          <app-sin-resultados mensaje="Ningún médico atendió turnos en este período." />
+        } @else {
+          <table mat-table [dataSource]="d.ranking.items">
+            <ng-container matColumnDef="posicion">
+              <th mat-header-cell *matHeaderCellDef>#</th>
+              <td mat-cell *matCellDef="let item">{{ item.posicion }}</td>
+            </ng-container>
+            <ng-container matColumnDef="medico">
+              <th mat-header-cell *matHeaderCellDef>Médico</th>
+              <td mat-cell *matCellDef="let item">{{ item.apellido }}, {{ item.nombre }}</td>
+            </ng-container>
+            <ng-container matColumnDef="cantidad">
+              <th mat-header-cell *matHeaderCellDef>Atendidos</th>
+              <td mat-cell *matCellDef="let item">{{ item.cantidad }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnasRanking"></tr>
+            <tr mat-row *matRowDef="let fila; columns: columnasRanking"></tr>
+          </table>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Turnos por especialidad</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (hayTurnosPorEspecialidad()) {
+          <div class="grafico">
+            <canvas baseChart type="bar" [data]="graficoEspecialidades()" [options]="opcionesBarras"></canvas>
+          </div>
+        } @else {
+          <app-sin-resultados icono="bar_chart" mensaje="No hay turnos en este período." />
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Turnos por sede</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (hayTurnosPorSede()) {
+          <div class="grafico">
+            <canvas baseChart type="pie" [data]="graficoSedes()" [options]="opcionesTorta"></canvas>
+          </div>
+        } @else {
+          <app-sin-resultados icono="pie_chart" mensaje="No hay turnos en este período." />
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

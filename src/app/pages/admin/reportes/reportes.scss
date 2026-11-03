@@ -1,0 +1,49 @@
+:host {
+  display: block;
+  max-width: 1200px;
+  margin: 16px auto;
+}
+
+.encabezado {
+  margin-bottom: 16px;
+}
+
+.filtro {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 16px;
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.tablero {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+}
+
+.indicador mat-card-content {
+  text-align: center;
+}
+
+.numero-grande {
+  margin: 24px 0 8px;
+  font: var(--mat-sys-display-medium);
+  color: var(--mat-sys-primary);
+}
+
+.detalle-indicador {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.grafico {
+  position: relative;
+  height: 320px;
+}
+
+table {
+  width: 100%;
+}
