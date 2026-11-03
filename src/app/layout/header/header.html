@@ -22,9 +22,46 @@
       type="button"
       aria-label="Notificaciones"
       matTooltip="Notificaciones"
+      [matMenuTriggerFor]="menuNotificaciones"
     >
-      <mat-icon>notifications</mat-icon>
+      <mat-icon
+        [matBadge]="notificaciones.noLeidas()"
+        [matBadgeHidden]="notificaciones.noLeidas() === 0"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        aria-hidden="false"
+        >notifications</mat-icon
+      >
     </button>
+
+    <mat-menu #menuNotificaciones="matMenu" class="panel-notificaciones" xPosition="before">
+      <!-- Evita que el menú se cierre al marcar una notificación como leída. -->
+      <div class="notificaciones" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+        <h3 class="titulo-notificaciones">Notificaciones</h3>
+        <mat-divider />
+        @for (notificacion of notificaciones.notificaciones(); track notificacion.id) {
+          <div class="notificacion" [class.no-leida]="!notificacion.leida">
+            <div class="texto-notificacion">
+              <span class="mensaje">{{ notificacion.mensaje }}</span>
+              <span class="fecha">{{ notificacion.fecha | fecha: true }}</span>
+            </div>
+            @if (!notificacion.leida) {
+              <button
+                mat-icon-button
+                type="button"
+                matTooltip="Marcar como leída"
+                aria-label="Marcar como leída"
+                (click)="marcarLeida(notificacion.id)"
+              >
+                <mat-icon>done</mat-icon>
+              </button>
+            }
+          </div>
+        } @empty {
+          <p class="sin-notificaciones">No tenés notificaciones.</p>
+        }
+      </div>
+    </mat-menu>
 
     <span class="nombre" [attr.title]="nombreCompleto()">{{ nombreCompleto() }}</span>
 
