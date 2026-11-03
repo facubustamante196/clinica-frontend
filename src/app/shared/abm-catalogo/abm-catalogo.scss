@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  max-width: 960px;
+  margin: 16px auto;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.filtro {
+  flex: 1;
+}
+
+table {
+  width: 100%;
+}
+
+.columna-acciones {
+  width: 120px;
+  text-align: right;
+}
+
+.reintentar {
+  display: flex;
+  justify-content: center;
+}
