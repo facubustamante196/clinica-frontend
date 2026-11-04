@@ -36,7 +36,7 @@ npm install
 
 ## Levantar
 
-Con el backend corriendo en `http://localhost:3000`:
+Con el backend corriendo en `http://localhost:3001`:
 
 ```bash
 ng serve
@@ -61,7 +61,7 @@ Se configura en un único lugar, `src/environments/`:
 ```ts
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://localhost:3001',
 };
 ```
 
