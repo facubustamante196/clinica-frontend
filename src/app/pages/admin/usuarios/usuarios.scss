@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  max-width: 1100px;
+  margin: 16px auto;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.acciones {
+  padding-top: 8px;
+}
+
+table {
+  width: 100%;
+}
+
+.reintentar {
+  display: flex;
+  justify-content: center;
+}
+
+.oculto {
+  display: none;
+}

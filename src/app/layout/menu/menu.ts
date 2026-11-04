@@ -18,6 +18,7 @@ const OPCIONES_POR_ROL: Record<Rol, OpcionMenu[]> = {
     { etiqueta: 'Coberturas', icono: 'health_and_safety', ruta: '/admin/coberturas' },
     { etiqueta: 'Sedes', icono: 'location_city', ruta: '/admin/sedes' },
     { etiqueta: 'Especialidades', icono: 'medical_services', ruta: '/admin/especialidades' },
+    { etiqueta: 'Usuarios', icono: 'group', ruta: '/admin/usuarios' },
     { etiqueta: 'Reportes', icono: 'bar_chart', ruta: '/admin/reportes' },
     { etiqueta: 'Auditoría', icono: 'fact_check', ruta: '/admin/auditoria' },
   ],

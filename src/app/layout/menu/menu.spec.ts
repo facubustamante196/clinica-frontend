@@ -63,6 +63,7 @@ describe('Menu', () => {
     const opciones = etiquetas().join('|');
     expect(opciones).toContain('Coberturas');
     expect(opciones).toContain('Auditoría');
+    expect(opciones).toContain('Usuarios');
     expect(opciones).not.toContain('Mis turnos');
   });
 
