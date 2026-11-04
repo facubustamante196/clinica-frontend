@@ -3,13 +3,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { catchError, debounceTime, of, Subject, switchMap, tap } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { catchError, debounceTime, filter, of, Subject, switchMap, tap } from 'rxjs';
 
 import {
   ETIQUETAS_ROL,
@@ -24,6 +27,7 @@ import { UsuarioService } from '../../../core/services/usuario.service';
 import { mensajeError } from '../../../core/utils/mensaje-error';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
+import { DatosFormularioUsuario, FormularioUsuario } from './formulario-usuario/formulario-usuario';
 
 /** Espera antes de buscar mientras el usuario escribe en los filtros. */
 const ESPERA_FILTRO_MS = 400;
@@ -41,6 +45,7 @@ const LARGO_MAXIMO_TEXTO = 30;
     MatPaginatorModule,
     MatSelectModule,
     MatTableModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     SinResultados,
   ],
@@ -49,10 +54,12 @@ const LARGO_MAXIMO_TEXTO = 30;
 })
 export class Usuarios {
   private readonly usuarioService = inject(UsuarioService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly roles = ROLES;
   protected readonly etiquetasRol: Record<string, string> = ETIQUETAS_ROL;
-  protected readonly columnas = ['nombre', 'dni', 'email', 'rol', 'sede'];
+  protected readonly columnas = ['nombre', 'dni', 'email', 'rol', 'sede', 'acciones'];
   protected readonly tamaniosPagina = [10, 25, 50];
   protected readonly largoMaximoTexto = LARGO_MAXIMO_TEXTO;
 
@@ -136,6 +143,23 @@ export class Usuarios {
     this.pagina.set(evento.pageIndex);
     this.tamanioPagina.set(evento.pageSize);
     this.cargar();
+  }
+
+  /** Abre el formulario de alta (sin usuario) o de edición, y refresca el listado si se guardó. */
+  protected abrirFormulario(usuario?: UsuarioListado): void {
+    this.dialog
+      .open<FormularioUsuario, DatosFormularioUsuario, boolean>(FormularioUsuario, {
+        data: { id: usuario?.id },
+        width: '640px',
+      })
+      .afterClosed()
+      .pipe(filter((guardado) => guardado === true))
+      .subscribe(() => {
+        this.snackBar.open(usuario ? 'Cambios guardados.' : 'Usuario creado.', 'Cerrar', {
+          duration: 4000,
+        });
+        this.cargar();
+      });
   }
 
   private filtrosActuales(): FiltrosUsuarios {

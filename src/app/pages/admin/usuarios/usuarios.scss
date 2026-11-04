@@ -13,11 +13,18 @@
 }
 
 .acciones {
+  display: flex;
+  gap: 8px;
   padding-top: 8px;
 }
 
 table {
   width: 100%;
+}
+
+.columna-acciones {
+  width: 80px;
+  text-align: right;
 }
 
 .reintentar {
