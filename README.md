@@ -15,6 +15,20 @@ Tomadas de `node -v` y `ng version`:
 | Angular | 21.2.25 |
 | Angular Material / CDK | 21.2.14 |
 | TypeScript | 5.9.3 |
+| Chart.js | 4.6.1 |
+| ng2-charts | 10.0.0 |
+
+### Librería de gráficos
+
+Los reportes del administrador usan **[Chart.js](https://www.chartjs.org/) 4** a través de
+**[ng2-charts](https://valor-software.com/ng2-charts/) 10**, compatible con Angular 21 y componentes
+standalone. Se instalan con `npm install` (están en `package.json`); no hace falta configuración extra.
+
+- Turnos por especialidad: gráfico de barras.
+- Turnos por sede: gráfico de torta.
+
+Los gráficos se registran solo en la pantalla de reportes (`provideCharts(withDefaultRegisterables())`
+en `reportes.ts`), así que Chart.js no se carga en el resto de la app.
 
 ## Instalación
 
