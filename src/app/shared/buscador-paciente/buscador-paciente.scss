@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.busqueda {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.ayuda {
+  color: var(--mat-sys-error);
+  margin: 0 0 8px;
+}
+
+table {
+  width: 100%;
+}
+
+.resaltado {
+  background-color: var(--mat-sys-secondary-container);
+}
+
+.columna-acciones {
+  text-align: right;
+}

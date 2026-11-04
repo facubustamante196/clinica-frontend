@@ -1,0 +1,80 @@
+:host {
+  display: block;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 420px;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.centrado {
+  display: flex;
+  justify-content: center;
+}
+
+.calendario {
+  max-width: 320px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+}
+
+.ayuda {
+  color: var(--mat-sys-on-surface-variant);
+  margin-top: 0;
+}
+
+.resumen {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0 0 16px;
+
+  dt {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.error {
+  color: var(--mat-sys-error);
+  margin: 0 0 12px;
+}
+
+.exito {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 24px 16px;
+  text-align: center;
+
+  mat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 48px;
+    color: var(--mat-sys-primary);
+  }
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  button {
+    margin-top: 16px;
+  }
+}
+
+.oculto {
+  display: none;
+}

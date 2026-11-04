@@ -1,0 +1,29 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Asignar turno</mat-card-title>
+    <mat-card-subtitle>Buscá al paciente y asignale un turno en tu sede</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (miSede() === null) {
+      <app-sin-resultados
+        icono="location_off"
+        mensaje="Tu usuario no tiene una sede asignada. Pedile al administrador que te asigne una."
+      />
+    } @else if (paciente(); as p) {
+      <div class="paciente">
+        <mat-icon>person</mat-icon>
+        <span>
+          <strong>{{ p.apellido }}, {{ p.nombre }}</strong> · DNI {{ p.dni }} ·
+          {{ p.cobertura_nombre ?? 'Sin cobertura' }}
+        </span>
+        <span class="espaciador"></span>
+        <button mat-button type="button" (click)="cambiarPaciente()">Cambiar paciente</button>
+      </div>
+
+      <app-nuevo-turno [paciente]="p" [sedeFija]="miSede()" (creado)="avisar($event)" />
+    } @else {
+      <app-buscador-paciente textoAccion="Asignar turno" (elegido)="elegir($event)" />
+    }
+  </mat-card-content>
+</mat-card>

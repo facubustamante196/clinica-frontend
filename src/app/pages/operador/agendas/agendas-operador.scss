@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  max-width: 1000px;
+  margin: 16px auto;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.espaciador {
+  flex: 1;
+}
+
+table {
+  width: 100%;
+}
+
+.columna-acciones {
+  text-align: right;
+  width: 140px;
+}
+
+.centrado {
+  display: flex;
+  justify-content: center;
+}

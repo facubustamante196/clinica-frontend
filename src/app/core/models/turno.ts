@@ -13,7 +13,7 @@ export interface Turno {
   id: number;
   /** Formato YYYY-MM-DD. */
   fecha: string;
-  /** Formato HH:mm:ss. */
+  /** Formato HH:mm (la API puede devolver HH:mm:ss). */
   hora: string;
   nota: string;
   estado: EstadoTurno;
@@ -28,4 +28,32 @@ export interface Turno {
   apellido_medico?: string;
   especialidad?: string;
   sede?: string;
+  nombre_paciente?: string;
+  apellido_paciente?: string;
+  /** Formato YYYY-MM-DD. */
+  fecha_nacimiento_paciente?: string;
+}
+
+/** Body de POST /turnos. El paciente no envía `id_paciente`; el operador sí. */
+export interface TurnoRequest {
+  id_especialidad: number;
+  id_sede: number;
+  id_medico: number;
+  fecha: string;
+  hora: string;
+  nota: string;
+  id_paciente?: number;
+}
+
+/** Datos clínicos que se cargan al marcar un turno como atendido. */
+export interface DatosAtencion {
+  diagnostico: string;
+  tratamiento: string;
+  observaciones?: string;
+}
+
+export interface FiltrosTurnos {
+  fecha: string;
+  id_medico?: number;
+  id_sede?: number;
 }

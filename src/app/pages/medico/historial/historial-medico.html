@@ -1,0 +1,55 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Historial clínico</mat-card-title>
+    <mat-card-subtitle>
+      Se muestran solo los registros de los turnos que atendiste vos.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <app-buscador-paciente
+      textoAccion="Ver historial"
+      [resaltado]="seleccionado()?.id ?? null"
+      (elegido)="verHistorial($event)"
+    />
+
+    @if (seleccionado(); as paciente) {
+      <h3 class="titulo-historial">
+        Historial de {{ paciente.apellido }}, {{ paciente.nombre }}
+      </h3>
+      @if (cargandoHistorial()) {
+        <app-cargando mensaje="Cargando historial…" />
+      } @else if (errorHistorial(); as error) {
+        <app-sin-resultados icono="error" [mensaje]="error" />
+      } @else if (historial().length === 0) {
+        <app-sin-resultados
+          icono="folder_off"
+          mensaje="No tenés registros clínicos de este paciente."
+        />
+      } @else {
+        <mat-accordion>
+          @for (registro of historial(); track registro.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ registro.fecha_turno | fecha }} · {{ registro.hora_turno }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ registro.especialidad_descripcion }} · {{ registro.sede_nombre }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <dl class="detalle">
+                <dt>Diagnóstico</dt>
+                <dd>{{ registro.diagnostico }}</dd>
+                <dt>Tratamiento</dt>
+                <dd>{{ registro.tratamiento }}</dd>
+                <dt>Observaciones</dt>
+                <dd>{{ registro.observaciones || '—' }}</dd>
+              </dl>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      }
+    }
+  </mat-card-content>
+</mat-card>

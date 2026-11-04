@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  max-width: 960px;
+  margin: 16px auto;
+}
+
+.titulo-historial {
+  margin: 24px 0 8px;
+}
+
+.detalle {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+
+  dt {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  dd {
+    margin: 0;
+  }
+}

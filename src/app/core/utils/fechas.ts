@@ -38,3 +38,22 @@ export function fechaHora(fecha: string, hora: string): Date {
 export function horaCorta(hora: string | null | undefined): string {
   return hora ? hora.slice(0, 5) : '';
 }
+
+/** Edad en años cumplidos a la fecha indicada (hoy por defecto); `null` si la fecha no es válida. */
+export function calcularEdad(
+  fechaNacimiento: string | Date | null | undefined,
+  hoy: Date = new Date(),
+): number | null {
+  const nacimiento = parsearFecha(fechaNacimiento);
+  if (!nacimiento) {
+    return null;
+  }
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const todaviaNoCumplio =
+    hoy.getMonth() < nacimiento.getMonth() ||
+    (hoy.getMonth() === nacimiento.getMonth() && hoy.getDate() < nacimiento.getDate());
+  if (todaviaNoCumplio) {
+    edad--;
+  }
+  return edad >= 0 ? edad : null;
+}

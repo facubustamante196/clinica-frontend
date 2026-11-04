@@ -1,0 +1,194 @@
+@if (cargandoBase()) {
+  <app-cargando mensaje="Cargando opciones…" />
+} @else if (errorBase()) {
+  <app-sin-resultados icono="cloud_off" mensaje="No se pudieron cargar las opciones del turno." />
+  <div class="centrado">
+    <button mat-button type="button" (click)="cargarBase()">Reintentar</button>
+  </div>
+} @else {
+  @if (turnoCreado(); as turno) {
+    <div class="exito" role="status">
+      <mat-icon>check_circle</mat-icon>
+      <h3>Turno confirmado</h3>
+      <p>
+        {{ especialidadElegida()?.descripcion }} con {{ medicoElegido()?.nombre }}
+        {{ medicoElegido()?.apellido }} · {{ sedeElegida()?.nombre }}
+      </p>
+      <p>{{ turno.fecha | fecha }} a las {{ turno.hora }}</p>
+      <button mat-stroked-button type="button" (click)="reiniciar()">Pedir otro turno</button>
+    </div>
+  }
+
+  <mat-stepper [linear]="true" [class.oculto]="turnoCreado()">
+    <mat-step label="Especialidad" [completed]="idEspecialidad() !== null">
+      <mat-form-field appearance="outline">
+        <mat-label>Especialidad</mat-label>
+        <mat-select
+          [value]="idEspecialidad()"
+          (selectionChange)="elegirEspecialidad($event.value)"
+        >
+          @for (especialidad of especialidades(); track especialidad.id) {
+            <mat-option [value]="especialidad.id">{{ especialidad.descripcion }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (especialidades().length === 0) {
+        <app-sin-resultados mensaje="No hay especialidades cargadas." />
+      }
+      <div class="acciones">
+        <button mat-flat-button type="button" matStepperNext [disabled]="idEspecialidad() === null">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Sede" [completed]="idSede() !== null">
+      <mat-form-field appearance="outline">
+        <mat-label>Sede</mat-label>
+        <mat-select
+          [value]="idSede()"
+          [disabled]="sedeBloqueada()"
+          (selectionChange)="elegirSede($event.value)"
+        >
+          @for (sede of sedes(); track sede.id) {
+            <mat-option [value]="sede.id">{{ sede.nombre }} · {{ sede.direccion }}</mat-option>
+          }
+        </mat-select>
+        @if (sedeBloqueada()) {
+          <mat-hint>El turno se asigna en tu sede.</mat-hint>
+        }
+      </mat-form-field>
+      <div class="acciones">
+        <button mat-button type="button" matStepperPrevious>Atrás</button>
+        <button mat-flat-button type="button" matStepperNext [disabled]="idSede() === null">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Médico" [completed]="idMedico() !== null">
+      @if (cargandoMedicos()) {
+        <app-cargando mensaje="Buscando médicos…" />
+      } @else if (medicos().length === 0) {
+        <app-sin-resultados
+          icono="person_off"
+          mensaje="No hay médicos de esa especialidad en esa sede."
+        />
+      } @else {
+        <mat-form-field appearance="outline">
+          <mat-label>Médico</mat-label>
+          <mat-select [value]="idMedico()" (selectionChange)="elegirMedico($event.value)">
+            @for (medico of medicos(); track medico.id) {
+              <mat-option [value]="medico.id">{{ medico.nombre }} {{ medico.apellido }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      <div class="acciones">
+        <button mat-button type="button" matStepperPrevious>Atrás</button>
+        <button mat-flat-button type="button" matStepperNext [disabled]="idMedico() === null">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Fecha" [completed]="fecha() !== null">
+      @if (cargandoFechas()) {
+        <app-cargando mensaje="Buscando fechas con agenda…" />
+      } @else if (fechas().length === 0) {
+        <app-sin-resultados
+          icono="event_busy"
+          mensaje="El médico no tiene fechas con horarios libres."
+        />
+      } @else {
+        <p class="ayuda">Solo se pueden elegir los días con horarios libres.</p>
+        <mat-calendar
+          class="calendario"
+          [minDate]="hoy"
+          [startAt]="primeraFecha()"
+          [dateFilter]="filtroFecha()"
+          [selected]="fechaSeleccionada()"
+          (selectedChange)="elegirFecha($event)"
+        />
+      }
+      <div class="acciones">
+        <button mat-button type="button" matStepperPrevious>Atrás</button>
+        <button mat-flat-button type="button" matStepperNext [disabled]="fecha() === null">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Horario" [completed]="hora() !== null">
+      @if (errorEnvio(); as error) {
+        <p class="error" role="alert">{{ error }}</p>
+      }
+      @if (cargandoHorarios()) {
+        <app-cargando mensaje="Buscando horarios libres…" />
+      } @else if (horarios().length === 0) {
+        <app-sin-resultados icono="schedule" mensaje="No quedan horarios libres para ese día." />
+      } @else {
+        <mat-chip-listbox
+          aria-label="Horarios disponibles"
+          [value]="hora()"
+          (change)="elegirHora($event.value)"
+        >
+          @for (horario of horarios(); track horario) {
+            <mat-chip-option [value]="horario">{{ horario }}</mat-chip-option>
+          }
+        </mat-chip-listbox>
+      }
+      <div class="acciones">
+        <button mat-button type="button" matStepperPrevious>Atrás</button>
+        <button mat-flat-button type="button" matStepperNext [disabled]="hora() === null">
+          Siguiente
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step label="Confirmación">
+      <dl class="resumen">
+        <dt>Especialidad</dt>
+        <dd>{{ especialidadElegida()?.descripcion }}</dd>
+        <dt>Médico</dt>
+        <dd>{{ medicoElegido()?.nombre }} {{ medicoElegido()?.apellido }}</dd>
+        <dt>Sede</dt>
+        <dd>{{ sedeElegida()?.nombre }}</dd>
+        <dt>Fecha</dt>
+        <dd>{{ fecha() | fecha }}</dd>
+        <dt>Hora</dt>
+        <dd>{{ hora() }}</dd>
+        <dt>Cobertura</dt>
+        <dd>{{ nombreCobertura() }}</dd>
+      </dl>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nota para el médico</mat-label>
+        <input matInput [formControl]="nota" [maxlength]="largoMaximoNota" required />
+        <mat-hint align="end">{{ nota.value.length }}/{{ largoMaximoNota }}</mat-hint>
+        @if (nota.hasError('required')) {
+          <mat-error>La nota es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (errorEnvio(); as error) {
+        <p class="error" role="alert">{{ error }}</p>
+      }
+
+      <div class="acciones">
+        <button mat-button type="button" matStepperPrevious>Atrás</button>
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="nota.invalid || enviando()"
+          (click)="confirmar()"
+        >
+          @if (enviando()) {
+            <mat-spinner diameter="18" />
+          }
+          Confirmar turno
+        </button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+}
