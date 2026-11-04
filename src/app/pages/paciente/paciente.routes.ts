@@ -7,4 +7,9 @@ export const PACIENTE_ROUTES: Routes = [
     title: 'Mis turnos',
     loadComponent: () => import('./mis-turnos/mis-turnos').then((m) => m.MisTurnos),
   },
+  {
+    path: 'datos',
+    title: 'Mis datos',
+    loadComponent: () => import('./mis-datos/mis-datos').then((m) => m.MisDatos),
+  },
 ];

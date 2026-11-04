@@ -33,7 +33,10 @@ const OPCIONES_POR_ROL: Record<Rol, OpcionMenu[]> = {
   ],
   // El historial clínico se ve dentro de cada turno atendido y las
   // notificaciones, en la campana del header.
-  paciente: [{ etiqueta: 'Mis turnos', icono: 'event', ruta: '/paciente/turnos' }],
+  paciente: [
+    { etiqueta: 'Mis turnos', icono: 'event', ruta: '/paciente/turnos' },
+    { etiqueta: 'Mis datos', icono: 'manage_accounts', ruta: '/paciente/datos' },
+  ],
 };
 
 const OPCIONES_SIN_SESION: OpcionMenu[] = [
