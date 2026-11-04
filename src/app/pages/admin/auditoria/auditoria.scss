@@ -1,0 +1,49 @@
+:host {
+  display: block;
+  max-width: 1100px;
+  margin: 16px auto;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.error-rango {
+  margin: 0 0 8px;
+  color: var(--mat-sys-error);
+}
+
+table {
+  width: 100%;
+}
+
+.accion {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font: var(--mat-sys-label-medium);
+}
+
+.accion-alta {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.accion-modificacion {
+  background-color: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.accion-baja {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}

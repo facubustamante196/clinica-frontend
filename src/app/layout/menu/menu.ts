@@ -18,6 +18,7 @@ const OPCIONES_POR_ROL: Record<Rol, OpcionMenu[]> = {
     { etiqueta: 'Coberturas', icono: 'health_and_safety', ruta: '/admin/coberturas' },
     { etiqueta: 'Sedes', icono: 'location_city', ruta: '/admin/sedes' },
     { etiqueta: 'Especialidades', icono: 'medical_services', ruta: '/admin/especialidades' },
+    { etiqueta: 'Usuarios', icono: 'group', ruta: '/admin/usuarios' },
     { etiqueta: 'Reportes', icono: 'bar_chart', ruta: '/admin/reportes' },
     { etiqueta: 'Auditoría', icono: 'fact_check', ruta: '/admin/auditoria' },
   ],
@@ -30,10 +31,11 @@ const OPCIONES_POR_ROL: Record<Rol, OpcionMenu[]> = {
     { etiqueta: 'Agendas', icono: 'calendar_month', ruta: '/operador/agendas' },
     { etiqueta: 'Turnos', icono: 'event', ruta: '/operador/turnos' },
   ],
+  // El historial clínico se ve dentro de cada turno atendido y las
+  // notificaciones, en la campana del header.
   paciente: [
     { etiqueta: 'Mis turnos', icono: 'event', ruta: '/paciente/turnos' },
-    { etiqueta: 'Mi historial clínico', icono: 'folder_shared', ruta: '/paciente/historial' },
-    { etiqueta: 'Notificaciones', icono: 'notifications', ruta: '/paciente/notificaciones' },
+    { etiqueta: 'Mis datos', icono: 'manage_accounts', ruta: '/paciente/datos' },
   ],
 };
 

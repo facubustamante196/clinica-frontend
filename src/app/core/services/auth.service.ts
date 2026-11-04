@@ -6,6 +6,7 @@ import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxj
 import { environment } from '../../../environments/environment';
 import { OMITIR_MANEJO_401 } from '../interceptors/omitir-manejo-401';
 import {
+  ActualizarPerfilRequest,
   ApiRespuesta,
   LoginResponse,
   RegistroRequest,
@@ -19,7 +20,8 @@ import { TokenService } from './token.service';
  * Estado de sesión y llamadas a /auth.
  *
  * Interfaz pública acordada con el equipo (no cambiar sin avisar):
- * usuario, rol, estaLogueado, login(), logout(), obtenerPerfil(), registrar().
+ * usuario, rol, estaLogueado, login(), logout(), obtenerPerfil(), registrar(),
+ * actualizarPerfil().
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -63,6 +65,17 @@ export class AuthService {
   /** Pide GET /auth/perfil y actualiza el usuario actual. */
   obtenerPerfil(): Observable<Usuario> {
     return this.pedirPerfil(new HttpContext());
+  }
+
+  /**
+   * El paciente actualiza sus datos personales (PATCH /auth/perfil) y el usuario
+   * actual pasa a ser el perfil que devuelve el backend.
+   */
+  actualizarPerfil(cambios: ActualizarPerfilRequest): Observable<Usuario> {
+    return this.http.patch<ApiRespuesta<Usuario>>(`${this.url}/perfil`, cambios).pipe(
+      map(({ datos }) => datos),
+      tap((usuario) => this._usuario.set(usuario)),
+    );
   }
 
   /** Registra un paciente. No inicia sesión. */

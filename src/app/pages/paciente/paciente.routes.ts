@@ -1,26 +1,15 @@
 import { Routes } from '@angular/router';
 
-const enConstruccion = () =>
-  import('../en-construccion/en-construccion').then((m) => m.EnConstruccion);
-
 export const PACIENTE_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'turnos' },
   {
     path: 'turnos',
     title: 'Mis turnos',
-    loadComponent: enConstruccion,
-    data: { funcion: 'Mis turnos' },
+    loadComponent: () => import('./mis-turnos/mis-turnos').then((m) => m.MisTurnos),
   },
   {
-    path: 'historial',
-    title: 'Mi historial clínico',
-    loadComponent: enConstruccion,
-    data: { funcion: 'Mi historial clínico' },
-  },
-  {
-    path: 'notificaciones',
-    title: 'Notificaciones',
-    loadComponent: enConstruccion,
-    data: { funcion: 'Notificaciones' },
+    path: 'datos',
+    title: 'Mis datos',
+    loadComponent: () => import('./mis-datos/mis-datos').then((m) => m.MisDatos),
   },
 ];

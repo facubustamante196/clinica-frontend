@@ -1,0 +1,101 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Auditoría</mat-card-title>
+    <mat-card-subtitle>Altas, bajas y modificaciones registradas en el sistema</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="filtros" [formGroup]="filtros" (ngSubmit)="buscar()" novalidate>
+      <mat-form-field>
+        <mat-label>ID de usuario</mat-label>
+        <input matInput type="number" min="1" formControlName="idUsuario" />
+        @if (filtros.controls.idUsuario.invalid) {
+          <mat-error>Ingresá un número entero positivo.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Entidad</mat-label>
+        <mat-select formControlName="entidad">
+          <mat-option [value]="null">Todas</mat-option>
+          @for (entidad of entidades; track entidad) {
+            <mat-option [value]="entidad">{{ etiquetasEntidad[entidad] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field formGroupName="rango">
+        <mat-label>Rango de fechas</mat-label>
+        <mat-date-range-input [rangePicker]="selectorRango">
+          <input matStartDate formControlName="desde" placeholder="Desde" />
+          <input matEndDate formControlName="hasta" placeholder="Hasta" />
+        </mat-date-range-input>
+        <mat-hint>dd/mm/aaaa – dd/mm/aaaa</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="selectorRango" />
+        <mat-date-range-picker #selectorRango />
+      </mat-form-field>
+
+      <div class="acciones">
+        <button mat-flat-button type="submit" [disabled]="cargando()">
+          <mat-icon>search</mat-icon>
+          Buscar
+        </button>
+        <button mat-button type="button" (click)="limpiar()" [disabled]="cargando()">Limpiar</button>
+      </div>
+    </form>
+
+    @if (filtros.controls.rango.hasError('rangoIncompleto') && filtros.controls.rango.touched) {
+      <p class="error-rango" role="alert">Completá las dos fechas del rango o dejalas vacías.</p>
+    }
+
+    @if (cargando()) {
+      <app-cargando />
+    } @else if (error(); as mensaje) {
+      <app-sin-resultados icono="error" [mensaje]="mensaje" />
+    } @else if (total() === 0) {
+      <app-sin-resultados mensaje="No hay registros de auditoría para esos filtros." />
+    } @else {
+      <table mat-table [dataSource]="paginaActual()">
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let registro">{{ registro.fecha | fecha: true }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="usuario">
+          <th mat-header-cell *matHeaderCellDef>Usuario</th>
+          <td mat-cell *matCellDef="let registro">#{{ registro.id_usuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="accion">
+          <th mat-header-cell *matHeaderCellDef>Acción</th>
+          <td mat-cell *matCellDef="let registro">
+            <span class="accion accion-{{ registro.accion | lowercase }}">{{ registro.accion }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="entidad">
+          <th mat-header-cell *matHeaderCellDef>Entidad</th>
+          <td mat-cell *matCellDef="let registro">{{ etiquetasEntidad[registro.entidad] }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="detalle">
+          <th mat-header-cell *matHeaderCellDef>Detalle</th>
+          <td mat-cell *matCellDef="let registro">{{ registro.detalle }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+      </table>
+
+      <mat-paginator
+        [length]="total()"
+        [pageIndex]="pagina()"
+        [pageSize]="tamanioPagina()"
+        [pageSizeOptions]="tamaniosPagina"
+        (page)="cambiarPagina($event)"
+        showFirstLastButtons
+        aria-label="Páginas de la auditoría"
+      />
+    }
+  </mat-card-content>
+</mat-card>

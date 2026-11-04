@@ -1,0 +1,206 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+
+@if (cargando()) {
+  <mat-dialog-content>
+    <app-cargando />
+  </mat-dialog-content>
+} @else if (errorCarga(); as mensaje) {
+  <mat-dialog-content>
+    <div class="alerta" role="alert">
+      <mat-icon>error</mat-icon>
+      <span>{{ mensaje }}</span>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cerrar</button>
+    <button mat-flat-button type="button" (click)="cargar()">Reintentar</button>
+  </mat-dialog-actions>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+    <mat-dialog-content>
+      @if (errorEnvio(); as mensaje) {
+        <div class="alerta" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ mensaje }}</span>
+        </div>
+      }
+
+      @if (esEdicion) {
+        <p class="rol-fijo">
+          Tipo de usuario: <strong>{{ etiquetasRol[rol() ?? ''] }}</strong>
+        </p>
+      } @else {
+        <mat-form-field>
+          <mat-label>Tipo de usuario</mat-label>
+          <mat-select formControlName="rol">
+            @for (opcion of rolesAlta; track opcion) {
+              <mat-option [value]="opcion">{{ etiquetasRol[opcion] }}</mat-option>
+            }
+          </mat-select>
+          <mat-hint
+            >Los pacientes se registran desde el registro o los da de alta un operador.</mat-hint
+          >
+          @if (form.controls.rol.hasError('required')) {
+            <mat-error>Elegí el tipo de usuario.</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      <div class="fila">
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" [maxlength]="largoMaximoTexto" />
+          @if (form.controls.nombre.hasError('required')) {
+            <mat-error>El nombre es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="apellido" [maxlength]="largoMaximoTexto" />
+          @if (form.controls.apellido.hasError('required')) {
+            <mat-error>El apellido es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="fila">
+        <mat-form-field>
+          <mat-label>DNI</mat-label>
+          <input matInput formControlName="dni" inputmode="numeric" maxlength="8" />
+          @if (form.controls.dni.hasError('required')) {
+            <mat-error>El DNI es obligatorio.</mat-error>
+          } @else if (form.controls.dni.hasError('pattern')) {
+            <mat-error>El DNI debe tener 7 u 8 números.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Fecha de nacimiento</mat-label>
+          <input
+            matInput
+            formControlName="fechaNacimiento"
+            [matDatepicker]="selectorFecha"
+            [max]="hoy"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+          <mat-datepicker #selectorFecha startView="multi-year" />
+          @if (form.controls.fechaNacimiento.hasError('required')) {
+            <mat-error>La fecha de nacimiento es obligatoria.</mat-error>
+          } @else if (form.controls.fechaNacimiento.hasError('matDatepickerParse')) {
+            <mat-error>Ingresá una fecha válida (dd/mm/aaaa).</mat-error>
+          } @else if (form.controls.fechaNacimiento.hasError('matDatepickerMax')) {
+            <mat-error>La fecha no puede ser futura.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="fila">
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" [maxlength]="largoMaximoTexto" />
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>El email es obligatorio.</mat-error>
+          } @else if (form.controls.email.hasError('pattern')) {
+            <mat-error>Ingresá un email válido (ej: nombre&#64;dominio.com).</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="telefono" inputmode="numeric" maxlength="10" />
+          @if (form.controls.telefono.hasError('required')) {
+            <mat-error>El teléfono es obligatorio.</mat-error>
+          } @else if (form.controls.telefono.hasError('pattern')) {
+            <mat-error>El teléfono debe tener entre 6 y 10 números.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>{{ esEdicion ? 'Nueva contraseña' : 'Contraseña' }}</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          [type]="ocultarPassword() ? 'password' : 'text'"
+          autocomplete="new-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="ocultarPassword.set(!ocultarPassword())"
+          [attr.aria-label]="ocultarPassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <mat-icon>{{ ocultarPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-hint>
+          @if (esEdicion) {
+            Dejala vacía para no cambiarla.
+          }
+          Mínimo {{ largoMinimoPassword }} caracteres.
+        </mat-hint>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        } @else if (form.controls.password.hasError('minlength')) {
+          <mat-error
+            >La contraseña debe tener al menos {{ largoMinimoPassword }} caracteres.</mat-error
+          >
+        }
+      </mat-form-field>
+
+      @if (llevaSede()) {
+        <mat-form-field>
+          <mat-label>Sede</mat-label>
+          <mat-select formControlName="idSede">
+            @for (sede of sedes(); track sede.id) {
+              <mat-option [value]="sede.id">{{ sede.nombre }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.idSede.hasError('required')) {
+            <mat-error>Elegí la sede.</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      @if (llevaEspecialidades()) {
+        <mat-form-field>
+          <mat-label>Especialidades</mat-label>
+          <mat-select formControlName="especialidades" multiple>
+            @for (especialidad of especialidades(); track especialidad.id) {
+              <mat-option [value]="especialidad.id">{{ especialidad.descripcion }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.especialidades.hasError('required')) {
+            <mat-error>Elegí al menos una especialidad.</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      @if (llevaCobertura()) {
+        <mat-form-field>
+          <mat-label>Cobertura</mat-label>
+          <mat-select formControlName="idCobertura">
+            @for (cobertura of coberturas(); track cobertura.id) {
+              <mat-option [value]="cobertura.id">{{ cobertura.nombre }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.idCobertura.hasError('required')) {
+            <mat-error>Elegí la cobertura.</mat-error>
+          }
+        </mat-form-field>
+      }
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" mat-dialog-close [disabled]="guardando()">Cancelar</button>
+      <button mat-flat-button type="submit" [disabled]="guardando()">
+        @if (guardando()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Guardar
+        }
+      </button>
+    </mat-dialog-actions>
+  </form>
+}

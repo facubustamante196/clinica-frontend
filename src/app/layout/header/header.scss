@@ -38,6 +38,57 @@ button {
   --mat-button-text-label-text-color: var(--mat-sys-on-primary);
 }
 
+// El panel del menú se renderiza en un overlay, fuera del componente.
+::ng-deep .panel-notificaciones {
+  width: 380px;
+  max-width: 380px !important;
+  max-height: 480px;
+
+  .titulo-notificaciones {
+    margin: 8px 16px;
+    font: var(--mat-sys-title-small);
+  }
+
+  .notificacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 16px;
+    border-left: 4px solid transparent;
+    color: var(--mat-sys-on-surface-variant);
+
+    &.no-leida {
+      border-left-color: var(--mat-sys-primary);
+      background-color: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+
+      .mensaje {
+        font-weight: 600;
+      }
+    }
+
+    button {
+      --mat-icon-button-icon-color: currentColor;
+    }
+  }
+
+  .texto-notificacion {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .fecha {
+    font: var(--mat-sys-body-small);
+  }
+
+  .sin-notificaciones {
+    margin: 16px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
 @media (max-width: 599.98px) {
   .marca-texto,
   .nombre,

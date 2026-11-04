@@ -29,6 +29,17 @@ export interface RegistroRequest {
   telefono?: string;
 }
 
+/**
+ * Body de PATCH /auth/perfil (solo paciente). Se envían solo los campos que
+ * cambian; tiene que venir al menos uno.
+ */
+export interface ActualizarPerfilRequest {
+  email?: string;
+  password?: string;
+  telefono?: string;
+  id_cobertura?: number;
+}
+
 export interface RegistroResponse {
   id: number;
   nombre: string;
