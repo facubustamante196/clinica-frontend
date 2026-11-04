@@ -1,12 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,11 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize, Observable } from 'rxjs';
 
 import { mensajeError } from '../../core/utils/mensaje-error';
+import { obligatorioSinEspacios } from '../../core/utils/validadores';
 import { CampoCatalogo } from './abm-catalogo.config';
-
-/** Como `Validators.required`, pero también rechaza un valor hecho solo de espacios. */
-const obligatorioSinEspacios: ValidatorFn = (control: AbstractControl<string>) =>
-  control.value?.trim() ? null : { required: true };
 
 export interface DatosFormularioCatalogo {
   titulo: string;

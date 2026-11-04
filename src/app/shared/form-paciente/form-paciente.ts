@@ -21,10 +21,9 @@ import { AuthService } from '../../core/services/auth.service';
 import { CoberturaService } from '../../core/services/cobertura.service';
 import { fechaIso } from '../../core/utils/fechas';
 import { mensajeError } from '../../core/utils/mensaje-error';
+import { LARGO_MINIMO_PASSWORD, PATRON_EMAIL } from '../../core/utils/validadores';
 
-const PATRON_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PATRON_DNI = /^\d+$/;
-const LARGO_MINIMO_PASSWORD = 6;
 
 /**
  * Formulario de alta de paciente. Lo usan el registro público y el operador.
