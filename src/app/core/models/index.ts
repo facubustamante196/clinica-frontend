@@ -10,3 +10,4 @@ export * from './rol';
 export * from './sede';
 export * from './turno';
 export * from './usuario';
+export * from './usuario-admin';
