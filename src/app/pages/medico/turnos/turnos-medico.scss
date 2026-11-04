@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  max-width: 1100px;
+  margin: 16px auto;
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+table {
+  width: 100%;
+}
+
+.fila {
+  cursor: pointer;
+}
+
+.fila:hover {
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.fila-detalle {
+  height: 0;
+}
+
+.fila-detalle-cerrada {
+  display: none;
+}
+
+.celda-detalle {
+  padding: 0;
+}
+
+.detalle {
+  padding: 12px 16px;
+  background-color: var(--mat-sys-surface-container-lowest);
+}
+
+.columna-acciones {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.estado {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font: var(--mat-sys-label-medium);
+}
+
+.estado-confirmado {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.estado-atendido {
+  background-color: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.estado-cancelado {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.centrado {
+  display: flex;
+  justify-content: center;
+}

@@ -1,4 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
@@ -23,6 +25,8 @@ describe('Rutas', () => {
       providers: [
         provideRouter(routes, withComponentInputBinding()),
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideNativeDateAdapter(),
         {
           provide: AuthService,
           useValue: {

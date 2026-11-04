@@ -1,0 +1,110 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Agendas</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (miSede() === null) {
+      <app-sin-resultados
+        icono="location_off"
+        mensaje="Tu usuario no tiene una sede asignada. Pedile al administrador que te asigne una."
+      />
+    } @else {
+      <div class="barra">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="selectorFecha" [formControl]="fecha" />
+          <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+          <mat-datepicker #selectorFecha />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Sede</mat-label>
+          <mat-select [formControl]="sede">
+            @for (s of sedes(); track s.id) {
+              <mat-option [value]="s.id">{{ s.nombre }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <span class="espaciador"></span>
+
+        <span [matTooltip]="avisoOtraSede" [matTooltipDisabled]="puedeModificar()">
+          <button
+            mat-flat-button
+            type="button"
+            [disabled]="!puedeModificar() || preparando()"
+            (click)="nuevaAgenda()"
+          >
+            <mat-icon>add</mat-icon>
+            Nueva agenda
+          </button>
+        </span>
+      </div>
+
+      @if (cargando()) {
+        <app-cargando mensaje="Cargando agendas…" />
+      } @else if (errorCarga()) {
+        <app-sin-resultados icono="cloud_off" mensaje="No se pudieron cargar las agendas." />
+        <div class="centrado">
+          <button mat-button type="button" (click)="cargar()">Reintentar</button>
+        </div>
+      } @else if (ordenadas().length === 0) {
+        <app-sin-resultados
+          icono="event_busy"
+          mensaje="No hay médicos con agenda para esta fecha y sede."
+        />
+      } @else {
+        <table mat-table [dataSource]="ordenadas()">
+          <ng-container matColumnDef="medico">
+            <th mat-header-cell *matHeaderCellDef>Médico</th>
+            <td mat-cell *matCellDef="let agenda">
+              {{ agenda.medico_apellido }}, {{ agenda.medico_nombre }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="especialidad">
+            <th mat-header-cell *matHeaderCellDef>Especialidad</th>
+            <td mat-cell *matCellDef="let agenda">{{ agenda.especialidad_descripcion }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="horario">
+            <th mat-header-cell *matHeaderCellDef>Horario</th>
+            <td mat-cell *matCellDef="let agenda">
+              {{ agenda.hora_entrada }} a {{ agenda.hora_salida }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+            <td mat-cell *matCellDef="let agenda" class="columna-acciones">
+              <span [matTooltip]="avisoOtraSede" [matTooltipDisabled]="puedeModificar()">
+                <button
+                  mat-icon-button
+                  type="button"
+                  aria-label="Editar la agenda del médico"
+                  [disabled]="!puedeModificar() || preparando()"
+                  (click)="editar(agenda)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </span>
+              <button
+                mat-icon-button
+                type="button"
+                matTooltip="Ver turnos confirmados"
+                aria-label="Ver los turnos confirmados del médico"
+                (click)="verTurnos(agenda)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+          <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
+        </table>
+      }
+    }
+  </mat-card-content>
+</mat-card>

@@ -29,11 +29,13 @@ const OPCIONES_POR_ROL: Record<Rol, OpcionMenu[]> = {
   ],
   operador: [
     { etiqueta: 'Agendas', icono: 'calendar_month', ruta: '/operador/agendas' },
-    { etiqueta: 'Turnos', icono: 'event', ruta: '/operador/turnos' },
+    { etiqueta: 'Nuevo paciente', icono: 'person_add', ruta: '/operador/pacientes' },
+    { etiqueta: 'Asignar turno', icono: 'event_available', ruta: '/operador/turnos' },
   ],
   // El historial clínico se ve dentro de cada turno atendido y las
   // notificaciones, en la campana del header.
   paciente: [
+    { etiqueta: 'Nuevo turno', icono: 'event_available', ruta: '/paciente/nuevo-turno' },
     { etiqueta: 'Mis turnos', icono: 'event', ruta: '/paciente/turnos' },
     { etiqueta: 'Mis datos', icono: 'manage_accounts', ruta: '/paciente/datos' },
   ],

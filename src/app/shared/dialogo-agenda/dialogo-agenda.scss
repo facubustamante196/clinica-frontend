@@ -1,0 +1,17 @@
+.contenido {
+  display: flex;
+  flex-direction: column;
+  min-width: 380px;
+  padding-top: 8px;
+}
+
+.horas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.error {
+  color: var(--mat-sys-error);
+  margin: 0 0 8px;
+}

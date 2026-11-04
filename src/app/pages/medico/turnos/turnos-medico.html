@@ -1,0 +1,120 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Turnos programados</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="barra">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="selectorFecha" [formControl]="fecha" />
+        <mat-datepicker-toggle matIconSuffix [for]="selectorFecha" />
+        <mat-datepicker #selectorFecha />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Sede</mat-label>
+        <mat-select [formControl]="sede">
+          <mat-option [value]="null">Todas las sedes</mat-option>
+          @for (s of sedes(); track s.id) {
+            <mat-option [value]="s.id">{{ s.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (cargando()) {
+      <app-cargando mensaje="Cargando turnos…" />
+    } @else if (errorCarga()) {
+      <app-sin-resultados icono="cloud_off" mensaje="No se pudieron cargar los turnos." />
+      <div class="centrado">
+        <button mat-button type="button" (click)="cargar()">Reintentar</button>
+      </div>
+    } @else if (ordenados().length === 0) {
+      <app-sin-resultados icono="event_busy" mensaje="No hay turnos para esta fecha y sede." />
+    } @else {
+      <table mat-table multiTemplateDataRows [dataSource]="ordenados()">
+        <ng-container matColumnDef="hora">
+          <th mat-header-cell *matHeaderCellDef>Hora</th>
+          <td mat-cell *matCellDef="let turno">{{ turno.hora }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="paciente">
+          <th mat-header-cell *matHeaderCellDef>Paciente</th>
+          <td mat-cell *matCellDef="let turno">
+            {{ turno.apellido_paciente }}, {{ turno.nombre_paciente }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="edad">
+          <th mat-header-cell *matHeaderCellDef>Edad</th>
+          <td mat-cell *matCellDef="let turno">
+            {{ calcularEdad(turno.fecha_nacimiento_paciente) ?? '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sede">
+          <th mat-header-cell *matHeaderCellDef>Sede</th>
+          <td mat-cell *matCellDef="let turno">{{ turno.sede }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let turno">
+            <span class="estado estado-{{ turno.estado }}">{{ etiqueta(turno) }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="columna-acciones">Acciones</th>
+          <td mat-cell *matCellDef="let turno" class="columna-acciones">
+            @if (turno.estado === 'confirmado') {
+              <button
+                mat-stroked-button
+                type="button"
+                [disabled]="procesando() === turno.id"
+                (click)="$event.stopPropagation(); atender(turno)"
+              >
+                Marcar como atendido
+              </button>
+              <button
+                mat-button
+                type="button"
+                [disabled]="procesando() === turno.id"
+                (click)="$event.stopPropagation(); cancelar(turno)"
+              >
+                Cancelar
+              </button>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="detalle">
+          <td mat-cell *matCellDef="let turno" [attr.colspan]="columnas.length" class="celda-detalle">
+            @if (expandido() === turno.id) {
+              <div class="detalle">
+                <strong>Nota del paciente:</strong>
+                {{ turno.nota || 'Sin nota.' }}
+              </div>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr
+          mat-row
+          *matRowDef="let fila; columns: columnas"
+          class="fila"
+          [class.fila-expandida]="expandido() === fila.id"
+          (click)="alternarDetalle(fila)"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let fila; columns: ['detalle']"
+          class="fila-detalle"
+          [class.fila-detalle-cerrada]="expandido() !== fila.id"
+        ></tr>
+      </table>
+    }
+  </mat-card-content>
+</mat-card>
