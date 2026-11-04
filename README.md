@@ -91,24 +91,27 @@ src/
     ├── app.routes.ts          # rutas públicas, con sesión, por rol y de estado
     ├── core/
     │   ├── guards/            # authGuard, roleGuard
-    │   ├── interceptors/      # authInterceptor (Bearer + manejo de 401)
-    │   ├── models/            # Usuario, Rol, Cobertura, request/response de auth, ApiRespuesta
-    │   └── services/          # AuthService, TokenService, CoberturaService
-    ├── layout/                # header, menu, footer
+    │   ├── interceptors/      # authInterceptor (Bearer + 401), errorInterceptor (backend caído o error)
+    │   ├── models/            # interfaces de la API (usuarios, turnos, sedes, auditoría, reportes...)
+    │   ├── services/          # un servicio por recurso de la API (auth, usuarios, turnos, sedes...)
+    │   └── utils/             # fechas, mensajes de error y validadores de formularios
+    ├── layout/                # header (con la campana de notificaciones), menu, footer
     ├── pages/
-    │   ├── admin/             # admin.routes.ts (sección /admin)
+    │   ├── admin/             # coberturas, sedes, especialidades, usuarios, reportes, auditoria
     │   ├── medico/            # medico.routes.ts (sección /medico)
     │   ├── operador/          # operador.routes.ts (sección /operador)
-    │   ├── paciente/          # paciente.routes.ts (sección /paciente)
+    │   ├── paciente/          # mis-turnos, mis-datos
     │   ├── home/  login/  perfil/  registro/
     │   └── acceso-denegado/  en-construccion/  no-encontrada/
-    └── shared/                # componentes reutilizables (pagina-estado)
+    └── shared/                # reutilizables: ABM genérico, alta de paciente, diálogo de
+                               # confirmación, carga, sin resultados, pipe de fecha
 ```
 
 ## Sesión y acceso
 
 - `AuthService` expone `usuario` (signal), `rol` y `estaLogueado` (computed), y los métodos
-  `login(dni, password)`, `logout()`, `obtenerPerfil()` y `registrar(datos)`.
+  `login(dni, password)`, `logout()`, `obtenerPerfil()`, `registrar(datos)` y
+  `actualizarPerfil(cambios)` (datos personales del paciente).
 - El JWT se guarda en `localStorage` (`clinica_token`). Al recargar, la sesión se restaura con
   `GET /auth/perfil` antes de la primera navegación.
 - `authInterceptor` agrega `Authorization: Bearer <token>` a las peticiones a la API. Ante un 401,
