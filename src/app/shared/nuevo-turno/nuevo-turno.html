@@ -14,7 +14,7 @@
         {{ especialidadElegida()?.descripcion }} con {{ medicoElegido()?.nombre }}
         {{ medicoElegido()?.apellido }} · {{ sedeElegida()?.nombre }}
       </p>
-      <p>{{ turno.fecha | fecha }} a las {{ turno.hora }}</p>
+      <p>{{ turno.fecha | fecha }} a las {{ turno.hora | hora }}</p>
       <button mat-stroked-button type="button" (click)="reiniciar()">Pedir otro turno</button>
     </div>
   }
@@ -157,7 +157,7 @@
         <dt>Fecha</dt>
         <dd>{{ fecha() | fecha }}</dd>
         <dt>Hora</dt>
-        <dd>{{ hora() }}</dd>
+        <dd>{{ hora() | hora }}</dd>
         <dt>Cobertura</dt>
         <dd>{{ nombreCobertura() }}</dd>
       </dl>

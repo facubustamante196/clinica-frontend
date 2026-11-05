@@ -45,7 +45,9 @@
       </div>
     </form>
 
-    @if (cargando()) {
+    <app-barra-carga [activa]="cargando() && usuarios().length > 0" />
+
+    @if (cargando() && usuarios().length === 0) {
       <app-cargando />
     } @else if (error(); as mensaje) {
       <app-sin-resultados icono="cloud_off" [mensaje]="mensaje" />
@@ -55,6 +57,7 @@
     } @else if (total() === 0) {
       <app-sin-resultados mensaje="No hay usuarios que coincidan con los filtros." />
     } @else {
+      <div class="tabla-scroll" [class.atenuado]="cargando()">
       <table mat-table [dataSource]="usuarios()">
         <ng-container matColumnDef="nombre">
           <th mat-header-cell *matHeaderCellDef>Apellido y nombre</th>
@@ -99,6 +102,7 @@
         <tr mat-header-row *matHeaderRowDef="columnas"></tr>
         <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
       </table>
+      </div>
     }
 
     <mat-paginator

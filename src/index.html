@@ -13,6 +13,20 @@
       rel="stylesheet"
     />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script>
+      // Muestra los íconos recién cuando la fuente cargó (o a los 3 s, si no llega).
+      (function () {
+        var listos = function () {
+          document.documentElement.classList.add('iconos-listos');
+        };
+        setTimeout(listos, 3000);
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load('24px "Material Icons"').then(listos, listos);
+        } else {
+          listos();
+        }
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

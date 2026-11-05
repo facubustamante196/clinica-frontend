@@ -1,4 +1,4 @@
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe, formatDate, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,6 +33,7 @@ interface TurnoConHistorial extends Turno {
     MatCardModule,
     MatExpansionModule,
     MatIconModule,
+    NgTemplateOutlet,
     SinResultados,
   ],
   templateUrl: './mis-turnos.html',
@@ -54,19 +55,22 @@ export class MisTurnos implements OnInit {
   protected readonly errorCarga = signal(false);
   protected readonly cancelando = signal<number | null>(null);
 
-  /**
-   * Del más próximo al menos próximo: primero los que vienen, del más cercano al
-   * más lejano, y después los pasados, del más reciente al más antiguo.
-   */
-  protected readonly ordenados = computed(() => {
+  protected readonly hayTurnos = computed(() => this.turnos().length > 0);
+
+  /** Turnos confirmados que todavía no pasaron, del más cercano al más lejano. */
+  protected readonly proximos = computed(() => {
     const ahora = Date.now();
-    const futuros = this.turnos()
-      .filter((t) => t.momento.getTime() >= ahora)
+    return this.turnos()
+      .filter((t) => t.estado === 'confirmado' && t.momento.getTime() >= ahora)
       .sort((a, b) => a.momento.getTime() - b.momento.getTime());
-    const pasados = this.turnos()
-      .filter((t) => t.momento.getTime() < ahora)
+  });
+
+  /** Todo lo demás (atendidos, cancelados y vencidos), del más reciente al más antiguo. */
+  protected readonly historial = computed(() => {
+    const ahora = Date.now();
+    return this.turnos()
+      .filter((t) => !(t.estado === 'confirmado' && t.momento.getTime() >= ahora))
       .sort((a, b) => b.momento.getTime() - a.momento.getTime());
-    return [...futuros, ...pasados];
   });
 
   ngOnInit(): void {
@@ -93,6 +97,10 @@ export class MisTurnos implements OnInit {
           ),
         error: () => this.errorCarga.set(true),
       });
+  }
+
+  protected etiquetaEstado(turno: Turno): string {
+    return this.etiquetasEstado[turno.estado];
   }
 
   protected nombreMedico(turno: Turno): string {

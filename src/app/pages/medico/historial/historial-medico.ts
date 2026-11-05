@@ -9,6 +9,8 @@ import { mensajeError } from '../../../core/utils/mensaje-error';
 import { BuscadorPaciente } from '../../../shared/buscador-paciente/buscador-paciente';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { FechaPipe } from '../../../shared/pipes/fecha.pipe';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
+
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 
 /**
@@ -21,6 +23,7 @@ import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
     BuscadorPaciente,
     Cargando,
     FechaPipe,
+    HoraPipe,
     MatCardModule,
     MatExpansionModule,
     SinResultados,

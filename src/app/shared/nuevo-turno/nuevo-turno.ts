@@ -43,6 +43,7 @@ import { mensajeError } from '../../core/utils/mensaje-error';
 import { obligatorioSinEspacios } from '../../core/utils/validadores';
 import { Cargando } from '../cargando/cargando';
 import { FechaPipe } from '../pipes/fecha.pipe';
+import { HoraPipe } from '../pipes/hora.pipe';
 import { SinResultados } from '../sin-resultados/sin-resultados';
 
 const LARGO_MAXIMO_NOTA = 40;
@@ -59,6 +60,7 @@ const PASO_HORARIO = 4;
     ReactiveFormsModule,
     Cargando,
     FechaPipe,
+    HoraPipe,
     MatButtonModule,
     MatChipsModule,
     MatDatepickerModule,

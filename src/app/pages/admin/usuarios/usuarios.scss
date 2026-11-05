@@ -32,6 +32,7 @@ table {
   justify-content: center;
 }
 
+// Se oculta sin sacarlo del flujo, para que el contenido no salte.
 .oculto {
-  display: none;
+  visibility: hidden;
 }

@@ -21,8 +21,10 @@ import { MedicoService } from '../../../core/services/medico.service';
 import { SedeService } from '../../../core/services/sede.service';
 import { fechaIso } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
+import { BarraCarga } from '../../../shared/barra-carga/barra-carga';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { DatosDialogoAgenda, DialogoAgenda } from '../../../shared/dialogo-agenda/dialogo-agenda';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 import {
   DatosDialogoEdicionAgenda,
@@ -40,7 +42,9 @@ const AVISO_OTRA_SEDE = 'Solo podés modificar la agenda y los turnos de tu sede
   selector: 'app-agendas-operador',
   imports: [
     ReactiveFormsModule,
+    BarraCarga,
     Cargando,
+    HoraPipe,
     MatButtonModule,
     MatCardModule,
     MatDatepickerModule,

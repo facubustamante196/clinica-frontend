@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
@@ -8,13 +7,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs';
 
-import { Cobertura, ETIQUETAS_ROL } from '../../core/models';
+import { Cobertura, ETIQUETAS_ROL, Sede } from '../../core/models';
 import { AuthService } from '../../core/services/auth.service';
 import { CoberturaService } from '../../core/services/cobertura.service';
+import { SedeService } from '../../core/services/sede.service';
+import { FechaPipe } from '../../shared/pipes/fecha.pipe';
 
 @Component({
   selector: 'app-perfil',
-  imports: [DatePipe, MatCardModule, MatIconModule, MatListModule, MatProgressSpinnerModule],
+  imports: [FechaPipe, MatCardModule, MatIconModule, MatListModule, MatProgressSpinnerModule],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',
 })
@@ -25,6 +26,7 @@ export class Perfil {
   protected readonly usuario = this.auth.usuario;
   protected readonly cargando = signal(true);
   private readonly coberturas = signal<Cobertura[]>([]);
+  private readonly sedes = signal<Sede[]>([]);
 
   protected readonly etiquetaRol = computed(() => {
     const rol = this.auth.rol();
@@ -34,6 +36,11 @@ export class Perfil {
   protected readonly cobertura = computed(() => {
     const id = this.usuario()?.id_cobertura;
     return this.coberturas().find((c) => c.id === id)?.nombre ?? null;
+  });
+
+  protected readonly sede = computed(() => {
+    const id = this.usuario()?.id_sede;
+    return this.sedes().find((s) => s.id === id)?.nombre ?? null;
   });
 
   constructor() {
@@ -52,5 +59,10 @@ export class Perfil {
       .listar()
       .pipe(takeUntilDestroyed())
       .subscribe({ next: (coberturas) => this.coberturas.set(coberturas), error: () => {} });
+
+    inject(SedeService)
+      .listar()
+      .pipe(takeUntilDestroyed())
+      .subscribe({ next: (sedes) => this.sedes.set(sedes), error: () => {} });
   }
 }

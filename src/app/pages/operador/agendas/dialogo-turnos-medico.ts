@@ -7,10 +7,12 @@ import { filter, finalize, switchMap } from 'rxjs';
 
 import { Turno } from '../../../core/models';
 import { TurnoService } from '../../../core/services/turno.service';
+import { horaCorta } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { confirmar } from '../../../shared/dialogo-confirmacion/dialogo-confirmacion';
 import { FechaPipe } from '../../../shared/pipes/fecha.pipe';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 
 export interface DatosDialogoTurnosMedico {
@@ -30,7 +32,7 @@ export interface DatosDialogoTurnosMedico {
  */
 @Component({
   selector: 'app-dialogo-turnos-medico',
-  imports: [Cargando, FechaPipe, MatButtonModule, MatDialogModule, MatTableModule, SinResultados],
+  imports: [Cargando, FechaPipe, HoraPipe, MatButtonModule, MatDialogModule, MatTableModule, SinResultados],
   template: `
     <h2 mat-dialog-title>Turnos de {{ datos.nombreMedico }} · {{ datos.fecha | fecha }}</h2>
 
@@ -42,10 +44,11 @@ export interface DatosDialogoTurnosMedico {
       } @else if (confirmados().length === 0) {
         <app-sin-resultados icono="event_busy" mensaje="No hay turnos confirmados para este día." />
       } @else {
+        <div class="tabla-scroll">
         <table mat-table [dataSource]="confirmados()">
           <ng-container matColumnDef="hora">
             <th mat-header-cell *matHeaderCellDef>Hora</th>
-            <td mat-cell *matCellDef="let t">{{ t.hora }}</td>
+            <td mat-cell *matCellDef="let t">{{ t.hora | hora }}</td>
           </ng-container>
           <ng-container matColumnDef="paciente">
             <th mat-header-cell *matHeaderCellDef>Paciente</th>
@@ -73,6 +76,7 @@ export interface DatosDialogoTurnosMedico {
           <tr mat-header-row *matHeaderRowDef="columnas"></tr>
           <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
         </table>
+        </div>
         @if (!datos.puedeCancelar) {
           <p class="aviso">Solo se pueden cancelar los turnos de tu sede.</p>
         }
@@ -129,7 +133,7 @@ export class DialogoTurnosMedico implements OnInit {
   protected cancelar(turno: Turno): void {
     confirmar(this.dialog, {
       titulo: 'Cancelar turno',
-      mensaje: `¿Está seguro de cancelar el turno de ${turno.apellido_paciente} ${turno.nombre_paciente} a las ${turno.hora}?`,
+      mensaje: `¿Está seguro de cancelar el turno de ${turno.apellido_paciente} ${turno.nombre_paciente} a las ${horaCorta(turno.hora)}?`,
       textoConfirmar: 'Cancelar turno',
     })
       .pipe(

@@ -9,13 +9,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { filter } from 'rxjs';
+import { filter, interval } from 'rxjs';
 
 import { ETIQUETAS_ROL } from '../../core/models';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificacionService } from '../../core/services/notificacion.service';
 import { mensajeError } from '../../core/utils/mensaje-error';
 import { FechaPipe } from '../../shared/pipes/fecha.pipe';
+
+/** Cada cuánto se vuelven a pedir las notificaciones mientras la pestaña está visible. */
+const INTERVALO_NOTIFICACIONES_MS = 60_000;
 
 @Component({
   selector: 'app-header',
@@ -46,9 +49,9 @@ export class Header {
     return usuario ? `${usuario.nombre} ${usuario.apellido}` : '';
   });
 
-  protected readonly tipoUsuario = computed(() => {
+  protected readonly etiquetaRol = computed(() => {
     const rol = this.auth.rol();
-    return rol ? `Tipo de usuario: ${ETIQUETAS_ROL[rol]}` : '';
+    return rol ? ETIQUETAS_ROL[rol] : '';
   });
 
   constructor() {
@@ -63,6 +66,16 @@ export class Header {
           this.notificaciones.refrescar();
         } else {
           this.notificaciones.limpiar();
+        }
+      });
+
+    // Además de al navegar, se consulta cada tanto para enterarse de turnos nuevos
+    // (por ejemplo, uno que asignó un operador) sin tener que recargar.
+    interval(INTERVALO_NOTIFICACIONES_MS)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        if (this.auth.estaLogueado() && !document.hidden) {
+          this.notificaciones.refrescar();
         }
       });
   }

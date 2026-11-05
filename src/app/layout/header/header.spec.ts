@@ -51,9 +51,9 @@ describe('Header', () => {
     fixture.detectChanges();
   });
 
-  it('sin sesión muestra el saludo de bienvenida', () => {
-    expect(texto()).toContain('Bienvenido a la clínica virtual');
+  it('sin sesión no muestra el usuario ni el botón de cerrar sesión', () => {
     expect(texto()).not.toContain('Cerrar sesión');
+    expect(fixture.nativeElement.querySelector('.usuario')).toBeNull();
   });
 
   it('con sesión muestra nombre, tipo de usuario y permite cerrar sesión', () => {
@@ -61,10 +61,7 @@ describe('Header', () => {
     fixture.detectChanges();
 
     expect(texto()).toContain('Ana Pérez');
-    expect(texto()).not.toContain('Bienvenido a la clínica virtual');
-
-    const info = fixture.nativeElement.querySelector('[aria-label^="Tipo de usuario"]');
-    expect(info.getAttribute('aria-label')).toBe('Tipo de usuario: Médico');
+    expect(fixture.nativeElement.querySelector('.rol').textContent).toContain('Médico');
 
     const botones = Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button'));
     botones.find((b) => b.textContent!.includes('Cerrar sesión'))!.click();

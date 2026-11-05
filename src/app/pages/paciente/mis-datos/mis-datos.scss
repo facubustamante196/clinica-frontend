@@ -45,6 +45,26 @@ h3 {
   justify-content: flex-end;
 }
 
+.acciones button {
+  gap: 8px;
+}
+
+@media (max-width: 599.98px) {
+  .solo-lectura,
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 0 16px;
+  }
+
+  .solo-lectura {
+    gap: 12px;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+}
+
 .alerta {
   display: flex;
   align-items: center;

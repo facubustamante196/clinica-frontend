@@ -36,35 +36,38 @@ table {
   padding: 0;
 }
 
+.fila:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
 .detalle {
   padding: 12px 16px;
   background-color: var(--mat-sys-surface-container-lowest);
+  animation: abrir-detalle 160ms ease-out;
+}
+
+@keyframes abrir-detalle {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detalle {
+    animation: none;
+  }
 }
 
 .columna-acciones {
   text-align: right;
   white-space: nowrap;
-}
-
-.estado {
-  padding: 2px 10px;
-  border-radius: 12px;
-  font: var(--mat-sys-label-medium);
-}
-
-.estado-confirmado {
-  background-color: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-}
-
-.estado-atendido {
-  background-color: var(--mat-sys-tertiary-container);
-  color: var(--mat-sys-on-tertiary-container);
-}
-
-.estado-cancelado {
-  background-color: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
 }
 
 .centrado {

@@ -11,6 +11,7 @@ import { Turno } from '../../../core/models';
 import { TurnoService } from '../../../core/services/turno.service';
 import { mensajeError } from '../../../core/utils/mensaje-error';
 import { obligatorioSinEspacios } from '../../../core/utils/validadores';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 
 /** Largo máximo de cada dato clínico (columnas del historial). */
 const LARGO_MAXIMO = 255;
@@ -28,6 +29,7 @@ export interface DatosDialogoAtencion {
   selector: 'app-dialogo-atencion',
   imports: [
     ReactiveFormsModule,
+    HoraPipe,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -40,7 +42,7 @@ export interface DatosDialogoAtencion {
       <mat-dialog-content class="contenido">
         <p class="paciente">
           {{ datos.turno.apellido_paciente }} {{ datos.turno.nombre_paciente }} ·
-          {{ datos.turno.hora }}
+          {{ datos.turno.hora | hora }}
         </p>
 
         <mat-form-field appearance="outline">

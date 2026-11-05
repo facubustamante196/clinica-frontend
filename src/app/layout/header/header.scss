@@ -19,17 +19,26 @@
   flex: 1 1 auto;
 }
 
-.nombre {
+.usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   max-width: 200px;
+  margin: 0 8px;
+  line-height: 1.2;
+}
+
+.nombre {
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font: var(--mat-sys-body-large);
 }
 
-.bienvenida {
-  font: var(--mat-sys-body-large);
-  text-align: right;
+.rol {
+  font: var(--mat-sys-label-small);
+  opacity: 0.85;
 }
 
 // Los botones de la toolbar heredan el color del texto sobre el primario.
@@ -40,8 +49,8 @@ button {
 
 // El panel del menú se renderiza en un overlay, fuera del componente.
 ::ng-deep .panel-notificaciones {
-  width: 380px;
-  max-width: 380px !important;
+  width: min(380px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px) !important;
   max-height: 480px;
 
   .titulo-notificaciones {
@@ -91,12 +100,8 @@ button {
 
 @media (max-width: 599.98px) {
   .marca-texto,
-  .nombre,
+  .usuario,
   .texto-boton {
     display: none;
-  }
-
-  .bienvenida {
-    font: var(--mat-sys-body-medium);
   }
 }

@@ -18,7 +18,7 @@ import { AgendaService } from '../../../core/services/agenda.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { MedicoService } from '../../../core/services/medico.service';
 import { SedeService } from '../../../core/services/sede.service';
-import { fechaIso } from '../../../core/utils/fechas';
+import { fechaIso, horaCorta } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { confirmar } from '../../../shared/dialogo-confirmacion/dialogo-confirmacion';
@@ -26,6 +26,7 @@ import {
   DatosDialogoAgenda,
   DialogoAgenda,
 } from '../../../shared/dialogo-agenda/dialogo-agenda';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 
 /** Agenda del médico logueado: por defecto la del día, con alta, modificación y baja de rangos. */
@@ -34,6 +35,7 @@ import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
   imports: [
     ReactiveFormsModule,
     Cargando,
+    HoraPipe,
     MatButtonModule,
     MatCardModule,
     MatDatepickerModule,
@@ -112,7 +114,7 @@ export class AgendaMedico implements OnInit {
   protected eliminar(agenda: Agenda): void {
     confirmar(this.dialog, {
       titulo: 'Eliminar rango horario',
-      mensaje: `¿Está seguro de eliminar el rango de ${agenda.hora_entrada} a ${agenda.hora_salida} en ${agenda.sede_nombre}?`,
+      mensaje: `¿Está seguro de eliminar el rango de ${horaCorta(agenda.hora_entrada)} a ${horaCorta(agenda.hora_salida)} en ${agenda.sede_nombre}?`,
       textoConfirmar: 'Eliminar',
     })
       .pipe(

@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PacienteBusqueda, Turno } from '../../../core/models';
 import { AuthService } from '../../../core/services/auth.service';
+import { horaCorta } from '../../../core/utils/fechas';
 import { BuscadorPaciente } from '../../../shared/buscador-paciente/buscador-paciente';
 import { NuevoTurno } from '../../../shared/nuevo-turno/nuevo-turno';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
@@ -45,7 +46,7 @@ export class AsignarTurno {
   protected avisar(turno: Turno): void {
     const p = this.paciente();
     this.snackBar.open(
-      `Turno asignado a ${p?.apellido}, ${p?.nombre}: ${turno.fecha.split('-').reverse().join('/')} a las ${turno.hora}.`,
+      `Turno asignado a ${p?.apellido}, ${p?.nombre}: ${turno.fecha.split('-').reverse().join('/')} a las ${horaCorta(turno.hora)}.`,
       'Cerrar',
       { duration: 6000 },
     );

@@ -6,34 +6,17 @@
 
 mat-accordion {
   display: block;
-  margin-top: 16px;
+  margin-top: 8px;
+}
+
+.seccion {
+  margin: 24px 0 0;
+  font: var(--mat-sys-title-medium);
 }
 
 mat-panel-description {
   justify-content: space-between;
   align-items: center;
-}
-
-.estado {
-  padding: 2px 10px;
-  border-radius: 12px;
-  font: var(--mat-sys-label-medium);
-}
-
-.estado-confirmado {
-  background-color: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-}
-
-.estado-atendido {
-  background-color: var(--mat-sys-tertiary-container);
-  color: var(--mat-sys-on-tertiary-container);
-}
-
-.estado-cancelado {
-  background-color: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
-  text-decoration: line-through;
 }
 
 .detalle {

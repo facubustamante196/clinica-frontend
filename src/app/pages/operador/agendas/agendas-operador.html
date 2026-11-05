@@ -42,7 +42,9 @@
         </span>
       </div>
 
-      @if (cargando()) {
+      <app-barra-carga [activa]="cargando() && ordenadas().length > 0" />
+
+      @if (cargando() && ordenadas().length === 0) {
         <app-cargando mensaje="Cargando agendas…" />
       } @else if (errorCarga()) {
         <app-sin-resultados icono="cloud_off" mensaje="No se pudieron cargar las agendas." />
@@ -55,6 +57,7 @@
           mensaje="No hay médicos con agenda para esta fecha y sede."
         />
       } @else {
+        <div class="tabla-scroll" [class.atenuado]="cargando()">
         <table mat-table [dataSource]="ordenadas()">
           <ng-container matColumnDef="medico">
             <th mat-header-cell *matHeaderCellDef>Médico</th>
@@ -71,7 +74,7 @@
           <ng-container matColumnDef="horario">
             <th mat-header-cell *matHeaderCellDef>Horario</th>
             <td mat-cell *matCellDef="let agenda">
-              {{ agenda.hora_entrada }} a {{ agenda.hora_salida }}
+              {{ agenda.hora_entrada | hora }} a {{ agenda.hora_salida | hora }}
             </td>
           </ng-container>
 
@@ -104,6 +107,7 @@
           <tr mat-header-row *matHeaderRowDef="columnas"></tr>
           <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
         </table>
+        </div>
       }
     }
   </mat-card-content>

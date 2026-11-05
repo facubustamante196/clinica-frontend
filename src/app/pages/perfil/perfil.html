@@ -27,7 +27,7 @@
           <mat-list-item>
             <mat-icon matListItemIcon>cake</mat-icon>
             <span matListItemTitle>Fecha de nacimiento</span>
-            <span matListItemLine>{{ u.fecha_nacimiento | date: 'dd/MM/yyyy' }}</span>
+            <span matListItemLine>{{ u.fecha_nacimiento | fecha }}</span>
           </mat-list-item>
         }
         @if (u.id_cobertura !== null) {
@@ -41,7 +41,7 @@
           <mat-list-item>
             <mat-icon matListItemIcon>location_city</mat-icon>
             <span matListItemTitle>Sede</span>
-            <span matListItemLine>N.º {{ u.id_sede }}</span>
+            <span matListItemLine>{{ sede() ?? 'N.º ' + u.id_sede }}</span>
           </mat-list-item>
         }
       </mat-list>

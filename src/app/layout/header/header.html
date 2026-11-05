@@ -63,23 +63,14 @@
       </div>
     </mat-menu>
 
-    <span class="nombre" [attr.title]="nombreCompleto()">{{ nombreCompleto() }}</span>
-
-    <button
-      mat-icon-button
-      type="button"
-      [attr.aria-label]="tipoUsuario()"
-      [matTooltip]="tipoUsuario()"
-      matTooltipShowDelay="0"
-    >
-      <mat-icon>info</mat-icon>
-    </button>
+    <span class="usuario">
+      <span class="nombre" [attr.title]="nombreCompleto()">{{ nombreCompleto() }}</span>
+      <span class="rol">{{ etiquetaRol() }}</span>
+    </span>
 
     <button mat-button type="button" (click)="cerrarSesion()">
       <mat-icon>logout</mat-icon>
       <span class="texto-boton">Cerrar sesión</span>
     </button>
-  } @else {
-    <span class="bienvenida">Bienvenido a la clínica virtual</span>
   }
 </mat-toolbar>
