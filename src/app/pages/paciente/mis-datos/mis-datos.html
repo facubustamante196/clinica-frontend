@@ -132,10 +132,9 @@
         <div class="acciones">
           <button mat-flat-button type="submit" [disabled]="guardando() || !hayCambios()">
             @if (guardando()) {
-              <mat-spinner diameter="20" />
-            } @else {
-              Guardar cambios
+              <mat-spinner diameter="18" />
             }
+            Guardar cambios
           </button>
         </div>
       </form>

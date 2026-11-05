@@ -16,10 +16,12 @@ import { filter, finalize, merge, switchMap } from 'rxjs';
 import { ETIQUETAS_ESTADO_TURNO, Sede, Turno } from '../../../core/models';
 import { SedeService } from '../../../core/services/sede.service';
 import { TurnoService } from '../../../core/services/turno.service';
-import { calcularEdad, fechaHora, fechaIso } from '../../../core/utils/fechas';
+import { calcularEdad, fechaHora, fechaIso, horaCorta } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
+import { BarraCarga } from '../../../shared/barra-carga/barra-carga';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { confirmar } from '../../../shared/dialogo-confirmacion/dialogo-confirmacion';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 import {
   DatosDialogoAtencion,
@@ -34,7 +36,9 @@ import {
   selector: 'app-turnos-medico',
   imports: [
     ReactiveFormsModule,
+    BarraCarga,
     Cargando,
+    HoraPipe,
     MatButtonModule,
     MatCardModule,
     MatDatepickerModule,
@@ -113,6 +117,15 @@ export class TurnosMedico implements OnInit {
     this.expandido.update((actual) => (actual === turno.id ? null : turno.id));
   }
 
+  /** Enter o espacio sobre la fila (no sobre sus botones) abre o cierra el detalle. */
+  protected teclaFila(evento: Event, turno: Turno): void {
+    if (evento.target !== evento.currentTarget) {
+      return;
+    }
+    evento.preventDefault();
+    this.alternarDetalle(turno);
+  }
+
   protected atender(turno: Turno): void {
     this.dialog
       .open<DialogoAtencion, DatosDialogoAtencion, boolean>(DialogoAtencion, {
@@ -130,7 +143,7 @@ export class TurnosMedico implements OnInit {
   protected cancelar(turno: Turno): void {
     confirmar(this.dialog, {
       titulo: 'Cancelar turno',
-      mensaje: `¿Está seguro de cancelar el turno de ${turno.apellido_paciente} ${turno.nombre_paciente} a las ${turno.hora}?`,
+      mensaje: `¿Está seguro de cancelar el turno de ${turno.apellido_paciente} ${turno.nombre_paciente} a las ${horaCorta(turno.hora)}?`,
       textoConfirmar: 'Cancelar turno',
     })
       .pipe(

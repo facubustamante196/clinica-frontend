@@ -9,11 +9,13 @@ import { filter, finalize, switchMap } from 'rxjs';
 
 import { Agenda, Medico, Sede } from '../../../core/models';
 import { AgendaService } from '../../../core/services/agenda.service';
+import { horaCorta } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { DatosDialogoAgenda, DialogoAgenda } from '../../../shared/dialogo-agenda/dialogo-agenda';
 import { confirmar } from '../../../shared/dialogo-confirmacion/dialogo-confirmacion';
 import { FechaPipe } from '../../../shared/pipes/fecha.pipe';
+import { HoraPipe } from '../../../shared/pipes/hora.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 
 export interface DatosDialogoEdicionAgenda {
@@ -33,6 +35,7 @@ export interface DatosDialogoEdicionAgenda {
   imports: [
     Cargando,
     FechaPipe,
+    HoraPipe,
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
@@ -53,10 +56,11 @@ export interface DatosDialogoEdicionAgenda {
       } @else if (agendas().length === 0) {
         <app-sin-resultados icono="event_busy" mensaje="No hay rangos cargados para este día." />
       } @else {
+        <div class="tabla-scroll">
         <table mat-table [dataSource]="agendas()">
           <ng-container matColumnDef="horario">
             <th mat-header-cell *matHeaderCellDef>Horario</th>
-            <td mat-cell *matCellDef="let a">{{ a.hora_entrada }} a {{ a.hora_salida }}</td>
+            <td mat-cell *matCellDef="let a">{{ a.hora_entrada | hora }} a {{ a.hora_salida | hora }}</td>
           </ng-container>
           <ng-container matColumnDef="especialidad">
             <th mat-header-cell *matHeaderCellDef>Especialidad</th>
@@ -83,6 +87,7 @@ export interface DatosDialogoEdicionAgenda {
           <tr mat-header-row *matHeaderRowDef="columnas"></tr>
           <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
         </table>
+        </div>
       }
     </mat-dialog-content>
 
@@ -138,7 +143,7 @@ export class DialogoEdicionAgenda implements OnInit {
   protected eliminar(agenda: Agenda): void {
     confirmar(this.dialog, {
       titulo: 'Eliminar rango horario',
-      mensaje: `¿Está seguro de eliminar el rango de ${agenda.hora_entrada} a ${agenda.hora_salida}?`,
+      mensaje: `¿Está seguro de eliminar el rango de ${horaCorta(agenda.hora_entrada)} a ${horaCorta(agenda.hora_salida)}?`,
       textoConfirmar: 'Eliminar',
     })
       .pipe(

@@ -1,3 +1,66 @@
+<ng-template #panel let-turno>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ turno.fecha | fecha }} · {{ horaCorta(turno.hora) }}
+      </mat-panel-title>
+      <mat-panel-description>
+        <span class="especialidad">{{ turno.especialidad ?? 'Turno' }}</span>
+        <span class="estado estado-{{ turno.estado }}">
+          {{ etiquetaEstado(turno) }}
+        </span>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <dl class="detalle">
+      <dt>Fecha</dt>
+      <dd>
+        {{ parsearFecha(turno.fecha) | date: 'EEEE d \'de\' MMMM \'de\' y' }}, a las
+        {{ horaCorta(turno.hora) }} h
+      </dd>
+      <dt>Especialista</dt>
+      <dd>{{ nombreMedico(turno) }}</dd>
+      <dt>Especialidad</dt>
+      <dd>{{ turno.especialidad ?? '—' }}</dd>
+      <dt>Sede</dt>
+      <dd>{{ turno.sede ?? '—' }}</dd>
+      <dt>Nota</dt>
+      <dd>{{ turno.nota }}</dd>
+    </dl>
+
+    @if (turno.estado === 'atendido') {
+      <h4 class="subtitulo">Historial clínico</h4>
+      @if (turno.historial; as historial) {
+        <dl class="detalle">
+          <dt>Diagnóstico</dt>
+          <dd>{{ historial.diagnostico }}</dd>
+          <dt>Tratamiento</dt>
+          <dd>{{ historial.tratamiento }}</dd>
+          <dt>Observaciones</dt>
+          <dd>{{ historial.observaciones || '—' }}</dd>
+        </dl>
+      } @else {
+        <p class="sin-historial">El médico todavía no cargó el historial de este turno.</p>
+      }
+    }
+
+    @if (turno.estado === 'confirmado') {
+      <mat-action-row>
+        <button
+          mat-button
+          type="button"
+          class="boton-cancelar"
+          [disabled]="cancelando() === turno.id"
+          (click)="cancelar(turno)"
+        >
+          <mat-icon>event_busy</mat-icon>
+          Cancelar turno
+        </button>
+      </mat-action-row>
+    }
+  </mat-expansion-panel>
+</ng-template>
+
 <mat-card appearance="outlined">
   <mat-card-header>
     <mat-card-title>Mis turnos</mat-card-title>
@@ -11,73 +74,28 @@
       <div class="centrado">
         <button mat-button type="button" (click)="cargar()">Reintentar</button>
       </div>
-    } @else if (ordenados().length === 0) {
+    } @else if (!hayTurnos()) {
       <app-sin-resultados icono="event_busy" mensaje="Todavía no tenés turnos." />
     } @else {
-      <mat-accordion>
-        @for (turno of ordenados(); track turno.id) {
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                {{ turno.fecha | fecha }} · {{ horaCorta(turno.hora) }}
-              </mat-panel-title>
-              <mat-panel-description>
-                <span class="especialidad">{{ turno.especialidad ?? 'Turno' }}</span>
-                <span class="estado estado-{{ turno.estado }}">
-                  {{ etiquetasEstado[turno.estado] }}
-                </span>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
+      <h3 class="seccion">Próximos turnos</h3>
+      @if (proximos().length > 0) {
+        <mat-accordion displayMode="flat">
+          @for (turno of proximos(); track turno.id) {
+            <ng-container *ngTemplateOutlet="panel; context: { $implicit: turno }" />
+          }
+        </mat-accordion>
+      } @else {
+        <p class="sin-historial">No tenés turnos próximos.</p>
+      }
 
-            <dl class="detalle">
-              <dt>Fecha</dt>
-              <dd>
-                {{ parsearFecha(turno.fecha) | date: 'EEEE d \'de\' MMMM \'de\' y' }}, a las
-                {{ horaCorta(turno.hora) }} h
-              </dd>
-              <dt>Especialista</dt>
-              <dd>{{ nombreMedico(turno) }}</dd>
-              <dt>Especialidad</dt>
-              <dd>{{ turno.especialidad ?? '—' }}</dd>
-              <dt>Sede</dt>
-              <dd>{{ turno.sede ?? '—' }}</dd>
-              <dt>Nota</dt>
-              <dd>{{ turno.nota }}</dd>
-            </dl>
-
-            @if (turno.estado === 'atendido') {
-              <h4 class="subtitulo">Historial clínico</h4>
-              @if (turno.historial; as historial) {
-                <dl class="detalle">
-                  <dt>Diagnóstico</dt>
-                  <dd>{{ historial.diagnostico }}</dd>
-                  <dt>Tratamiento</dt>
-                  <dd>{{ historial.tratamiento }}</dd>
-                  <dt>Observaciones</dt>
-                  <dd>{{ historial.observaciones || '—' }}</dd>
-                </dl>
-              } @else {
-                <p class="sin-historial">El médico todavía no cargó el historial de este turno.</p>
-              }
-            }
-
-            @if (turno.estado === 'confirmado') {
-              <mat-action-row>
-                <button
-                  mat-button
-                  type="button"
-                  class="boton-cancelar"
-                  [disabled]="cancelando() === turno.id"
-                  (click)="cancelar(turno)"
-                >
-                  <mat-icon>event_busy</mat-icon>
-                  Cancelar turno
-                </button>
-              </mat-action-row>
-            }
-          </mat-expansion-panel>
-        }
-      </mat-accordion>
+      @if (historial().length > 0) {
+        <h3 class="seccion">Historial</h3>
+        <mat-accordion displayMode="flat">
+          @for (turno of historial(); track turno.id) {
+            <ng-container *ngTemplateOutlet="panel; context: { $implicit: turno }" />
+          }
+        </mat-accordion>
+      }
     }
   </mat-card-content>
 </mat-card>

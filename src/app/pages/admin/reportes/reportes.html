@@ -36,6 +36,9 @@
   <app-cargando mensaje="Calculando indicadores…" />
 } @else if (error(); as mensaje) {
   <app-sin-resultados icono="error" [mensaje]="mensaje" />
+  <div class="reintentar">
+    <button mat-button type="button" (click)="actualizar()">Reintentar</button>
+  </div>
 } @else if (datos(); as d) {
   <div class="tablero">
     <mat-card appearance="outlined" class="indicador">
@@ -58,6 +61,7 @@
         @if (d.ranking.items.length === 0) {
           <app-sin-resultados mensaje="Ningún médico atendió turnos en este período." />
         } @else {
+          <div class="tabla-scroll">
           <table mat-table [dataSource]="d.ranking.items">
             <ng-container matColumnDef="posicion">
               <th mat-header-cell *matHeaderCellDef>#</th>
@@ -74,6 +78,7 @@
             <tr mat-header-row *matHeaderRowDef="columnasRanking"></tr>
             <tr mat-row *matRowDef="let fila; columns: columnasRanking"></tr>
           </table>
+          </div>
         }
       </mat-card-content>
     </mat-card>

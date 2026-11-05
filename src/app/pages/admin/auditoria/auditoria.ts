@@ -28,6 +28,7 @@ import {
 import { AuditoriaService } from '../../../core/services/auditoria.service';
 import { fechaIso } from '../../../core/utils/fechas';
 import { mensajeError } from '../../../core/utils/mensaje-error';
+import { BarraCarga } from '../../../shared/barra-carga/barra-carga';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { FechaPipe } from '../../../shared/pipes/fecha.pipe';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
@@ -48,6 +49,7 @@ function rangoCompleto(grupo: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-auditoria',
   imports: [
+    BarraCarga,
     Cargando,
     FechaPipe,
     LowerCasePipe,

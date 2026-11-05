@@ -47,3 +47,29 @@
 table {
   width: 100%;
 }
+
+.reintentar {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 899.98px) {
+  .tablero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .filtro {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .grafico {
+    height: 260px;
+  }
+
+  .numero-grande {
+    font: var(--mat-sys-display-small);
+  }
+}

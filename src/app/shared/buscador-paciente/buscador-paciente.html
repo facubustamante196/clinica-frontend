@@ -32,6 +32,7 @@
   @if (lista.length === 0) {
     <app-sin-resultados icono="person_search" mensaje="No se encontraron pacientes." />
   } @else {
+    <div class="tabla-scroll">
     <table mat-table [dataSource]="lista">
       <ng-container matColumnDef="paciente">
         <th mat-header-cell *matHeaderCellDef>Paciente</th>
@@ -64,5 +65,6 @@
         [class.resaltado]="resaltado() === fila.id"
       ></tr>
     </table>
+    </div>
   }
 }

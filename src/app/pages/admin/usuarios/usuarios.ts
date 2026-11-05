@@ -25,6 +25,7 @@ import {
 import { SedeService } from '../../../core/services/sede.service';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { mensajeError } from '../../../core/utils/mensaje-error';
+import { BarraCarga } from '../../../shared/barra-carga/barra-carga';
 import { Cargando } from '../../../shared/cargando/cargando';
 import { SinResultados } from '../../../shared/sin-resultados/sin-resultados';
 import { DatosFormularioUsuario, FormularioUsuario } from './formulario-usuario/formulario-usuario';
@@ -36,6 +37,7 @@ const LARGO_MAXIMO_TEXTO = 30;
 @Component({
   selector: 'app-usuarios',
   imports: [
+    BarraCarga,
     Cargando,
     MatButtonModule,
     MatCardModule,

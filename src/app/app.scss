@@ -21,6 +21,9 @@
 .contenido {
   display: flex;
   flex-direction: column;
+  // Reserva el lugar de la barra de scroll: si no, al expandir contenido aparece la
+  // barra, el ancho útil baja unos píxeles y todo el contenido centrado se corre.
+  scrollbar-gutter: stable;
 }
 
 .principal {

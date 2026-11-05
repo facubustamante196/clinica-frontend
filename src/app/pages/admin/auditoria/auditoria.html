@@ -48,13 +48,19 @@
       <p class="error-rango" role="alert">Completá las dos fechas del rango o dejalas vacías.</p>
     }
 
-    @if (cargando()) {
+    <app-barra-carga [activa]="cargando() && total() > 0" />
+
+    @if (cargando() && total() === 0) {
       <app-cargando />
     } @else if (error(); as mensaje) {
       <app-sin-resultados icono="error" [mensaje]="mensaje" />
+      <div class="reintentar">
+        <button mat-button type="button" (click)="buscar()">Reintentar</button>
+      </div>
     } @else if (total() === 0) {
       <app-sin-resultados mensaje="No hay registros de auditoría para esos filtros." />
     } @else {
+      <div class="tabla-scroll" [class.atenuado]="cargando()">
       <table mat-table [dataSource]="paginaActual()">
         <ng-container matColumnDef="fecha">
           <th mat-header-cell *matHeaderCellDef>Fecha</th>
@@ -86,6 +92,7 @@
         <tr mat-header-row *matHeaderRowDef="columnas"></tr>
         <tr mat-row *matRowDef="let fila; columns: columnas"></tr>
       </table>
+      </div>
 
       <mat-paginator
         [length]="total()"

@@ -27,12 +27,12 @@
           mensaje="No tenés registros clínicos de este paciente."
         />
       } @else {
-        <mat-accordion>
+        <mat-accordion displayMode="flat">
           @for (registro of historial(); track registro.id) {
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  {{ registro.fecha_turno | fecha }} · {{ registro.hora_turno }}
+                  {{ registro.fecha_turno | fecha }} · {{ registro.hora_turno | hora }}
                 </mat-panel-title>
                 <mat-panel-description>
                   {{ registro.especialidad_descripcion }} · {{ registro.sede_nombre }}

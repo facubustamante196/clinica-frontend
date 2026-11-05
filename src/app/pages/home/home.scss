@@ -27,6 +27,13 @@
   gap: 8px;
 }
 
+// En pantallas chicas el menú está oculto: la flecha apuntaría a la nada.
+@media (max-width: 959.98px) {
+  .flecha-menu {
+    display: none;
+  }
+}
+
 .acciones {
   gap: 8px;
   padding: 0 16px 16px;

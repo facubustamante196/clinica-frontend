@@ -36,4 +36,87 @@ body {
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
+
+// ---------------------------------------------------------------------------
+// Utilidades compartidas
+// ---------------------------------------------------------------------------
+
+// Reserva el lugar de la barra de scroll de la página para que el contenido
+// centrado no se corra de costado cuando aparece.
+html {
+  scrollbar-gutter: stable;
+}
+
+// Tablas anchas: scroll horizontal dentro de su contenedor, no en toda la página.
+.tabla-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+// Listado que se está recargando: se ve el contenido anterior atenuado.
+.atenuado {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+// Etiqueta de estado de un turno (confirmado / atendido / cancelado).
+.estado {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font: var(--mat-sys-label-medium);
+  white-space: nowrap;
+}
+
+.estado-confirmado {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.estado-atendido {
+  background-color: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.estado-cancelado {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  text-decoration: line-through;
+}
+
+// Acordeones: Material agranda el encabezado (48px -> 64px) al abrir un panel y eso
+// hace saltar los demás. Con la misma altura abierto y cerrado solo crece el contenido.
+mat-accordion {
+  --mat-expansion-header-collapsed-state-height: 56px;
+  --mat-expansion-header-expanded-state-height: 56px;
+}
+
+// La página nueva aparece con un fundido suave en vez de golpe.
+main.principal > :not(router-outlet) {
+  animation: entrada-pagina 180ms ease-out;
+}
+
+@keyframes entrada-pagina {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.principal > :not(router-outlet) {
+    animation: none;
+  }
+}
+
+// Los íconos (fuente externa) se ocultan hasta que la fuente carga, para no mostrar
+// el texto del ícono ("notifications", "menu") por un instante. Ver index.html.
+html:not(.iconos-listos) mat-icon {
+  visibility: hidden;
+}

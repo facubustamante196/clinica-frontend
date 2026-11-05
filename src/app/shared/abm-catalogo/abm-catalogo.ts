@@ -70,6 +70,12 @@ export class AbmCatalogo<T extends { id: number }> implements OnInit {
     this.cargar();
   }
 
+  /** Texto del primer campo del registro, para los nombres accesibles de sus botones. */
+  protected nombreItem(item: T): string {
+    const primero = this.config().campos[0];
+    return primero ? String(item[primero.nombre]) : '';
+  }
+
   protected cargar(): void {
     this.cargando.set(true);
     this.errorCarga.set(false);
